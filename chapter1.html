@@ -760,3 +760,312 @@
             <li>Any messages from your program (we'll learn about this later)</li>
             <li>Helpful hints from p5.js</li>
         </ul>
+    <div class="container">
+        <h2>1.6 Comments - Notes to Yourself</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/xJcrPJuem5Q" title="1.6: Code Comments" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>As your sketches get more complex, it's helpful to leave notes in your code. These are called comments!</p>
+        
+        <p>Comments are like sticky notes you leave for yourself (or other programmers) to explain what your code does. The computer completely ignores them - they're just for humans!</p>
+        
+        <h3>Why Use Comments?</h3>
+        
+        <p>You might think, "I'll remember what this code does!" But trust me, you won't! Even I forget what my own code does sometimes. Comments help you:</p>
+        <ul>
+            <li>Remember what your code does when you come back to it later</li>
+            <li>Explain complex parts of your program</li>
+            <li>Leave reminders or TODO notes</li>
+            <li>Temporarily disable code without deleting it</li>
+            <li>Help others understand your code</li>
+        </ul>
+        
+        <h3>Single Line Comments</h3>
+        
+        <p>The most common type of comment starts with two forward slashes <code>//</code>:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>); <span class="comment">// Make a 400x400 canvas</span>
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);  <span class="comment">// Gray background</span>
+  
+  <span class="comment">// Draw a red circle in the center</span>
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">100</span>);
+  
+  <span class="comment">// TODO: Add more shapes here</span>
+}</code></pre>
+        
+        <p>Everything after <code>//</code> on that line is a comment. You can put them:</p>
+        <ul>
+            <li>At the end of a line of code</li>
+            <li>On their own line</li>
+            <li>Anywhere you want to add a note!</li>
+        </ul>
+        
+        <h3>Multi-line Comments</h3>
+        
+        <p>Sometimes you need to write longer explanations. For this, we use multi-line comments that start with <code>/*</code> and end with <code>*/</code>:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">/*
+    This is a multi-line comment.
+    I can write several lines here
+    to explain what my code does!
+    
+    This sketch draws a simple house.
+  */</span>
+  <span class="function">background</span>(<span class="number">135</span>, <span class="number">206</span>, <span class="number">235</span>);  <span class="comment">// Sky blue</span>
+  
+  <span class="comment">// The sun</span>
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">223</span>, <span class="number">0</span>);
+  <span class="function">circle</span>(<span class="number">350</span>, <span class="number">50</span>, <span class="number">60</span>);
+  
+  <span class="comment">/* 
+     The house body
+     Using a reddish brown color
+  */</span>
+  <span class="function">fill</span>(<span class="number">178</span>, <span class="number">34</span>, <span class="number">34</span>);
+  <span class="function">rect</span>(<span class="number">150</span>, <span class="number">200</span>, <span class="number">100</span>, <span class="number">100</span>);
+}</code></pre>
+        
+        <h3>Using Comments to Organize Your Code</h3>
+        
+        <p>Comments are great for organizing your code into sections:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// === BACKGROUND ===</span>
+  <span class="function">background</span>(<span class="number">135</span>, <span class="number">206</span>, <span class="number">235</span>);
+  
+  <span class="comment">// === SUN ===</span>
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">223</span>, <span class="number">0</span>);
+  <span class="function">noStroke</span>();
+  <span class="function">circle</span>(<span class="number">350</span>, <span class="number">50</span>, <span class="number">60</span>);
+  
+  <span class="comment">// === HOUSE ===</span>
+  <span class="comment">// Body</span>
+  <span class="function">fill</span>(<span class="number">178</span>, <span class="number">34</span>, <span class="number">34</span>);
+  <span class="function">rect</span>(<span class="number">150</span>, <span class="number">200</span>, <span class="number">100</span>, <span class="number">100</span>);
+  
+  <span class="comment">// Roof</span>
+  <span class="function">fill</span>(<span class="number">101</span>, <span class="number">67</span>, <span class="number">33</span>);
+  <span class="function">triangle</span>(<span class="number">150</span>, <span class="number">200</span>, <span class="number">250</span>, <span class="number">200</span>, <span class="number">200</span>, <span class="number">150</span>);
+  
+  <span class="comment">// === GROUND ===</span>
+  <span class="function">fill</span>(<span class="number">34</span>, <span class="number">139</span>, <span class="number">34</span>);
+  <span class="function">rect</span>(<span class="number">0</span>, <span class="number">300</span>, <span class="number">400</span>, <span class="number">100</span>);
+}</code></pre>
+        
+        <h3>Commenting Out Code</h3>
+        
+        <p>Comments are super useful for temporarily "turning off" code without deleting it:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// Try different shapes</span>
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">100</span>);
+  <span class="comment">// rect(150, 150, 100, 100);</span>
+  <span class="comment">// triangle(200, 100, 150, 200, 250, 200);</span>
+}</code></pre>
+        
+        <p>This way, you can easily switch between different versions of your code by adding or removing the <code>//</code>!</p>
+        
+        <h3>Good Commenting Practices</h3>
+        
+        <div class="tip">
+            <strong>DO:</strong>
+            <ul>
+                <li>Explain WHY you're doing something, not just what</li>
+                <li>Keep comments short and clear</li>
+                <li>Update comments when you change the code</li>
+                <li>Use comments to break up complex code</li>
+            </ul>
+            
+            <strong>DON'T:</strong>
+            <ul>
+                <li>State the obvious: <code>// Set x to 5</code> for <code>x = 5</code></li>
+                <li>Leave outdated comments that don't match the code</li>
+                <li>Write novels - keep it concise!</li>
+            </ul>
+        </div>
+        
+        <h3>Example: Well-Commented Code</h3>
+        
+        <p>Here's an example of a well-commented sketch:</p>
+        
+        <pre><code><span class="comment">/*
+  Robot Face
+  Created by: Your Name
+  Date: Today's Date
+  
+  This sketch draws a simple robot face with blinking eyes
+*/</span>
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">200</span>);  <span class="comment">// Light gray background</span>
+  
+  <span class="comment">// Robot head (square for that robotic look)</span>
+  <span class="function">fill</span>(<span class="number">150</span>);
+  <span class="function">stroke</span>(<span class="number">0</span>);
+  <span class="function">strokeWeight</span>(<span class="number">3</span>);
+  <span class="function">rect</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">200</span>, <span class="number">200</span>);
+  
+  <span class="comment">// Eyes - using circles</span>
+  <span class="function">fill</span>(<span class="number">255</span>);  <span class="comment">// White eyes</span>
+  <span class="function">circle</span>(<span class="number">150</span>, <span class="number">150</span>, <span class="number">40</span>);
+  <span class="function">circle</span>(<span class="number">250</span>, <span class="number">150</span>, <span class="number">40</span>);
+  
+  <span class="comment">// Pupils</span>
+  <span class="function">fill</span>(<span class="number">0</span>);  <span class="comment">// Black pupils</span>
+  <span class="function">circle</span>(<span class="number">150</span>, <span class="number">150</span>, <span class="number">20</span>);
+  <span class="function">circle</span>(<span class="number">250</span>, <span class="number">150</span>, <span class="number">20</span>);
+  
+  <span class="comment">// Mouth - a simple line for now</span>
+  <span class="function">strokeWeight</span>(<span class="number">5</span>);
+  <span class="function">line</span>(<span class="number">150</span>, <span class="number">250</span>, <span class="number">250</span>, <span class="number">250</span>);
+  
+  <span class="comment">// TODO: Add antenna on top</span>
+  <span class="comment">// TODO: Make eyes blink using variables</span>
+}</code></pre>
+        
+        <h3>Comments and Debugging</h3>
+        
+        <p>Comments are also super helpful when debugging. You can use them to:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// DEBUG: Check position values</span>
+  <span class="comment">// circle(100, 100, 50);  // Test position</span>
+  
+  <span class="comment">// Actual circle</span>
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">50</span>);
+}</code></pre>
+        
+        <p>Comments are your friends! Use them liberally, and your future self (and anyone else who reads your code) will thank you!</p>
+        
+        <h2>1.7 Your Turn! - Practice Exercises</h2>
+        
+        <p>Now it's your turn! Try these exercises to practice what you've learned:</p>
+        
+        <div class="exercise">
+            <h3>Exercise 1.1: Robot Face</h3>
+            <p>Create a robot face using basic shapes:</p>
+            <ul>
+                <li>Use at least one of each: circle, rectangle, triangle, line</li>
+                <li>Make it colorful!</li>
+                <li>No animation needed - just a static drawing</li>
+                <li>Add comments to explain each part of your robot</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 1.2: House Scene</h3>
+            <p>Expand on the house example:</p>
+            <ul>
+                <li>Add more details (chimney, bushes, clouds, birds)</li>
+                <li>Use different colors</li>
+                <li>Try using strokeWeight for variety</li>
+                <li>Comment your code to organize it into sections</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 1.3: Abstract Art</h3>
+            <p>Create an abstract composition:</p>
+            <ul>
+                <li>Use at least 10 shapes</li>
+                <li>Use at least 5 different colors</li>
+                <li>Experiment with overlapping shapes</li>
+                <li>Try using both fill and stroke</li>
+                <li>Remember: order matters!</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 1.4: Traffic Light</h3>
+            <p>Draw a traffic light:</p>
+            <ul>
+                <li>Black rectangle for the body</li>
+                <li>Three circles (red, yellow, green)</li>
+                <li>Make ONE light "on" (bright) and the others "off" (darker)</li>
+                <li>Add a pole underneath</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 1.5: Your Initials</h3>
+            <p>Draw your initials using lines and shapes:</p>
+            <ul>
+                <li>Make them large and colorful</li>
+                <li>Get creative with how you construct the letters!</li>
+                <li>Try using different shapes for different letters</li>
+            </ul>
+        </div>
+        
+        <div class="exercise" style="background-color: #fff3cd; border-color: #ffecd1;">
+            <h3>Challenge: Olympic Rings</h3>
+            <p>Can you recreate the Olympic rings logo?</p>
+            <ul>
+                <li>Five interlocking rings</li>
+                <li>Correct colors: blue, yellow, black, green, red</li>
+                <li>Hint: Use noFill() and strokeWeight()</li>
+                <li>Extra challenge: Get the overlapping order right!</li>
+                <li>Super challenge: Add the Olympic flame above the rings!</li>
+            </ul>
+        </div>
+        
+        <h2>1.8 What's Next?</h2>
+        
+        <p>Congratulations! You've taken your first steps into the world of creative coding! You've learned:</p>
+        
+        <ul style="font-size: 1.1em;">
+            <li>✓ How to use the p5.js Web Editor</li>
+            <li>✓ The structure of a p5.js sketch with setup() and draw()</li>
+            <li>✓ How to draw basic shapes</li>
+            <li>✓ How the coordinate system works</li>
+            <li>✓ How to add colors with fill() and stroke()</li>
+            <li>✓ How to read error messages</li>
+            <li>✓ How to use comments to document your code</li>
+        </ul>
+        
+        <p>But wait! You might have noticed that our sketches are pretty static. What if we want things to move? What if we want to remember information? What if we want the circle to follow the mouse?</p>
+        
+        <p>That's where <strong>VARIABLES</strong> come in! In the next chapter, we'll learn how to:</p>
+        <ul>
+            <li>Store information in variables</li>
+            <li>Make things move and animate</li>
+            <li>Use special variables like mouseX and mouseY</li>
+            <li>Create interactive sketches that respond to user input</li>
+        </ul>
+        
+        <p style="font-size: 1.2em; text-align: center; margin-top: 40px;">Get ready - things are about to get REALLY fun!</p>
+        
+        <hr style="margin: 40px 0;">
+        
+        <h1>Chapter 2: Variables</h1>
+        <p style="text-align: center; color: #7f8c8d;"><em>[Chapter 2 content continues...]</em></p>
+    </div>
+</body>
+</html>

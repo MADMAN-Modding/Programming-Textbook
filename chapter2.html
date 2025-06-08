@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code! Programming with p5.js - Chapter 2: Variables</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+        
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.4;
+            margin: 20px 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: #abb2bf;
+        }
+        
+        /* Syntax highlighting */
+        .keyword {
+            color: #c678dd;
+        }
+        
+        .function {
+            color: #61afef;
+        }
+        
+        .number {
+            color: #d19a66;
+        }
+        
+        .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+        
+        .string {
+            color: #98c379;
+        }
+        
+        .alert {
+            background-color: #fff3cd;
+            border: 1px solid #ffecd1;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .tip {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .error-example {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .exercise {
+            background-color: #e8f4ff;
+            border: 1px solid #b8e0ff;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .exercise h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+        }
+        
+        .coordinate-system {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        
+        strong {
+            color: #2c3e50;
+        }
+        
+        em {
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 2: Variables</h1>
+        
+        <h2>2.1 What Are Variables? Making Your Code Remember Things!</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/7A5tKW9HGoM?si=7Xzt870HZHvka3Kt" title="2.1: Variables in p5.js (mouseX, mouseY)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>Okay, okay, so you've made some beautiful static drawings with shapes and colors. That's amazing! But what if I told you there's a way to make your sketches come ALIVE? What if your circles could follow your mouse? What if things could move and change and remember information? Enter: VARIABLES!</p>
+        
+        <p>Think of a variable like a box with a label on it. You can:</p>
+        <ul>
+            <li>Put things in the box (store values)</li>
+            <li>Look at what's in the box (read values)</li>
+            <li>Change what's in the box (update values)</li>
+            <li>The label tells you what kind of stuff is in the box (the variable name)</li>
+        </ul>
+        
+        <p>In programming, that "stuff" is data - numbers, words, colors, positions, you name it!</p>
+        
+        <h3>Your First Variables: mouseX and mouseY</h3>
+        
+        <p>Before we learn how to make our own variables, let's play with some that p5.js gives us for FREE! The most fun ones are <code>mouseX</code> and <code>mouseY</code>.</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(mouseX, mouseY, <span class="number">50</span>);
+}</code></pre>
+        
+        <p>WHOA! The circle follows your mouse! How does this magic work?</p>
+        
+        <ul>
+            <li><code>mouseX</code> is a variable that always contains the x position of your mouse</li>
+            <li><code>mouseY</code> is a variable that always contains the y position of your mouse</li>
+            <li>p5.js updates these values automatically 60 times per second!</li>
+        </ul>
+        
+        <p>Let's see what these values actually are:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// Draw circle at mouse position</span>
+  <span class="function">circle</span>(mouseX, mouseY, <span class="number">50</span>);
+  
+  <span class="comment">// Show the values</span>
+  <span class="function">fill</span>(<span class="number">0</span>);
+  <span class="function">text</span>(<span class="string">"mouseX: "</span> + mouseX, <span class="number">10</span>, <span class="number">20</span>);
+  <span class="function">text</span>(<span class="string">"mouseY: "</span> + mouseY, <span class="number">10</span>, <span class="number">40</span>);
+}</code></pre>
+        
+        <p>Move your mouse around and watch the numbers change! These variables are constantly updating with new values.</p>
+        
+        <h3>Making a Paint Program!</h3>
+        
+        <p>Here's something cool - what if we DON'T clear the background each frame?</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">background</span>(<span class="number">220</span>);  <span class="comment">// Clear background only once!</span>
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// No background() here!</span>
+  <span class="function">circle</span>(mouseX, mouseY, <span class="number">20</span>);
+}</code></pre>
+        
+        <p>You're painting with circles! The old circles stay on the screen because we're not clearing them with <code>background()</code>.</p>
+        
+        <h3>Other Built-in Variables</h3>
+        
+        <p>p5.js gives us lots of useful variables for free:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// width and height give us the canvas size</span>
+  <span class="function">circle</span>(width/<span class="number">2</span>, height/<span class="number">2</span>, <span class="number">100</span>);  <span class="comment">// Always centered!</span>
+  
+  <span class="comment">// frameCount counts how many frames have passed</span>
+  <span class="function">fill</span>(<span class="number">0</span>);
+  <span class="function">text</span>(<span class="string">"Frame: "</span> + frameCount, <span class="number">10</span>, <span class="number">20</span>);
+}</code></pre>
+        
+        <ul>
+            <li><code>width</code> - the width of your canvas</li>
+            <li><code>height</code> - the height of your canvas</li>
+            <li><code>frameCount</code> - how many times draw() has run</li>
+            <li><code>mouseX</code> - x position of mouse</li>
+            <li><code>mouseY</code> - y position of mouse</li>
+        </ul>
+        
+        <h2>2.2 Creating Your Own Variables</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/dRhXIIFp-ys?si=sMnatu108TEBvBir" title="2.2: Variables in p5.js (Define Your Own)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>Built-in variables are great, but the REAL power comes from making your own variables! Let's learn how!</p>
+        
+        <h3>Declaring Variables with let</h3>
+        
+        <p>To create a variable in JavaScript, we use the keyword <code>let</code>:</p>
+        
+        <pre><code><span class="keyword">let</span> circleX = <span class="number">200</span>;
+<span class="keyword">let</span> circleY = <span class="number">200</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(circleX, circleY, <span class="number">50</span>);
+}</code></pre>
+        
+        <p>Let's break this down:</p>
+        <ul>
+            <li><code>let</code> - This keyword tells JavaScript "I want to create a variable!"</li>
+            <li><code>circleX</code> - This is the name we chose for our variable (the label on the box)</li>
+            <li><code>=</code> - This means "put the following value into the variable"</li>
+            <li><code>200</code> - This is the initial value we're storing</li>
+        </ul>
+        
+        <p>But wait! This seems exactly the same as just writing <code>circle(200, 200, 50)</code>. Why bother with variables?</p>
+        
+        <h3>Variables Can Change!</h3>
+        
+        <p>Here's where it gets exciting - variables can CHANGE their values:</p>
+        
+        <pre><code><span class="keyword">let</span> circleX = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(circleX, <span class="number">200</span>, <span class="number">50</span>);
+  
+  circleX = circleX + <span class="number">1</span>;  <span class="comment">// Move the circle to the right!</span>
+}</code></pre>
+        
+        <p>Your circle is MOVING! Let's understand what's happening:</p>
+        <ol>
+            <li>We start with <code>circleX = 0</code></li>
+            <li>We draw a circle at position (0, 200)</li>
+            <li>We add 1 to circleX, so now <code>circleX = 1</code></li>
+            <li>Next frame: circle draws at (1, 200)</li>
+            <li>We add 1 again, so <code>circleX = 2</code></li>
+            <li>This repeats 60 times per second!</li>
+        </ol>
+        
+        <h3>Variable Names - Choose Wisely!</h3>
+        
+        <p>You can name your variables almost anything you want, but there are rules:</p>
+        
+        <div class="tip">
+            <strong>Good variable names:</strong>
+            <ul>
+                <li><code>circleX</code> - Descriptive!</li>
+                <li><code>playerScore</code> - Clear what it's for</li>
+                <li><code>backgroundColor</code> - Self-explanatory</li>
+            </ul>
+            
+            <strong>Bad variable names:</strong>
+            <ul>
+                <li><code>x</code> - Too vague (unless it's obviously an x coordinate)</li>
+                <li><code>thing</code> - What thing?!</li>
+                <li><code>asdfghjkl</code> - Just... no</li>
+            </ul>
+            
+            <strong>Invalid names (will cause errors):</strong>
+            <ul>
+                <li><code>2fast2furious</code> - Can't start with a number</li>
+                <li><code>my-variable</code> - No hyphens allowed</li>
+                <li><code>let</code> - Can't use reserved keywords</li>
+            </ul>
+        </div>
+        
+        <h3>Variable Scope - Where Variables Live</h3>
+        
+        <p>WHERE you create a variable matters! Variables created outside any function are "global" - they can be used anywhere:</p>
+        
+        <pre><code><span class="keyword">let</span> globalX = <span class="number">100</span>;  <span class="comment">// This is a global variable</span>
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="keyword">let</span> setupVariable = <span class="number">50</span>;  <span class="comment">// This only exists in setup()</span>
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(globalX, <span class="number">200</span>, <span class="number">50</span>);  <span class="comment">// This works!</span>
+  <span class="comment">// circle(setupVariable, 200, 50);  // This would cause an error!</span>
+}</code></pre>
+        
+        <div class="alert">
+            <strong>Important:</strong> Variables declared inside a function only exist within that function. Variables declared outside any function can be used anywhere in your program.
+        </div>
+        
+        <h2>2.3 Incrementing Variables - Making Things Move!</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/T26OJGjI8qI?si=-2Liu7gsDoABdL08" title="2.3: Incrementation Operations" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>We've seen how to make things move by changing variables. Let's explore different ways to update variable values!</p>
+        
+        <h3>The Basic Way</h3>
+        
+        <pre><code><span class="keyword">let</span> x = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(x, <span class="number">200</span>, <span class="number">50</span>);
+  
+  x = x + <span class="number">1</span>;  <span class="comment">// Add 1 to x</span>
+}</code></pre>
+        
+        <h3>Shorthand Operators - Less Typing!</h3>
+        
+        <p>Programmers are lazy (in a good way!). We don't like typing more than necessary. So we have shortcuts:</p>
+        
+        <pre><code><span class="comment">// These all do the same thing:</span>
+x = x + <span class="number">1</span>;    <span class="comment">// The long way</span>
+x += <span class="number">1</span>;       <span class="comment">// Add 1 to x</span>
+x++;          <span class="comment">// Add 1 to x (super short!)</span>
+
+<span class="comment">// For subtraction:</span>
+x = x - <span class="number">1</span>;    <span class="comment">// The long way</span>
+x -= <span class="number">1</span>;       <span class="comment">// Subtract 1 from x</span>
+x--;          <span class="comment">// Subtract 1 from x</span>
+
+<span class="comment">// You can use += with any number:</span>
+x += <span class="number">5</span>;       <span class="comment">// Same as x = x + 5</span>
+x -= <span class="number">3</span>;       <span class="comment">// Same as x = x - 3</span>
+x *= <span class="number">2</span>;       <span class="comment">// Same as x = x * 2</span>
+x /= <span class="number">2</span>;       <span class="comment">// Same as x = x / 2</span></code></pre>
+        
+        <h3>Different Speeds</h3>
+        
+        <p>Want to make things move faster or slower? Just change how much you add!</p>
+        
+        <pre><code><span class="keyword">let</span> slowX = <span class="number">0</span>;
+<span class="keyword">let</span> mediumX = <span class="number">0</span>;
+<span class="keyword">let</span> fastX = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// Slow circle</span>
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+  <span class="function">circle</span>(slowX, <span class="number">100</span>, <span class="number">30</span>);
+  slowX += <span class="number">0.5</span>;  <span class="comment">// Moves slowly</span>
+  
+  <span class="comment">// Medium circle</span>
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>);
+  <span class="function">circle</span>(mediumX, <span class="number">200</span>, <span class="number">30</span>);
+  mediumX += <span class="number">2</span>;   <span class="comment">// Moves at medium speed</span>
+  
+  <span class="comment">// Fast circle</span>
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">circle</span>(fastX, <span class="number">300</span>, <span class="number">30</span>);
+  fastX += <span class="number">5</span>;     <span class="comment">// Zooms across!</span>
+}</code></pre>
+        
+        <h3>Going Backwards</h3>
+        
+        <p>Who says things can only move right? Let's go backwards!</p>
+        
+        <pre><code><span class="keyword">let</span> x = <span class="number">400</span>;  <span class="comment">// Start at the right</span>
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(x, <span class="number">200</span>, <span class="number">50</span>);
+  
+  x = x - <span class="number">2</span>;  <span class="comment">// Move left!</span>
+}</code></pre>
+        
+        <h2>2.4 The random() Function - Embrace the Chaos!</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/POn4cZ0jL-o?si=LlO-cfERDOeKSBTd" title="2.4: The random() Function" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>Sometimes you don't want things to be predictable. Sometimes you want RANDOMNESS! The <code>random()</code> function is here to add some chaos to your life!</p>
+        
+        <h3>Basic Random Numbers</h3>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="keyword">let</span> x = <span class="function">random</span>(<span class="number">0</span>, width);   <span class="comment">// Random x between 0 and canvas width</span>
+  <span class="keyword">let</span> y = <span class="function">random</span>(<span class="number">0</span>, height);  <span class="comment">// Random y between 0 and canvas height</span>
+  
+  <span class="function">circle</span>(x, y, <span class="number">50</span>);
+}</code></pre>
+        
+        <p>SEIZURE WARNING! Just kidding! But seriously, that's a lot of circles jumping around! Every frame, we get new random positions.</p>
+        
+        <h3>How random() Works</h3>
+        
+        <p>The <code>random()</code> function can be used in different ways:</p>
+        
+        <pre><code><span class="comment">// Random number between 0 and 10</span>
+<span class="keyword">let</span> r1 = <span class="function">random</span>(<span class="number">10</span>);
+
+<span class="comment">// Random number between 5 and 10</span>
+<span class="keyword">let</span> r2 = <span class="function">random</span>(<span class="number">5</span>, <span class="number">10</span>);
+
+<span class="comment">// Random number between -5 and 5</span>
+<span class="keyword">let</span> r3 = <span class="function">random</span>(-<span class="number">5</span>, <span class="number">5</span>);</code></pre>
+        
+        <h3>Random Colors!</h3>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">background</span>(<span class="number">220</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// Random color values</span>
+  <span class="keyword">let</span> r = <span class="function">random</span>(<span class="number">0</span>, <span class="number">255</span>);
+  <span class="keyword">let</span> g = <span class="function">random</span>(<span class="number">0</span>, <span class="number">255</span>);
+  <span class="keyword">let</span> b = <span class="function">random</span>(<span class="number">0</span>, <span class="number">255</span>);
+  
+  <span class="function">fill</span>(r, g, b);
+  <span class="function">noStroke</span>();
+  
+  <span class="comment">// Random position and size</span>
+  <span class="keyword">let</span> x = <span class="function">random</span>(width);
+  <span class="keyword">let</span> y = <span class="function">random</span>(height);
+  <span class="keyword">let</span> size = <span class="function">random</span>(<span class="number">10</span>, <span class="number">50</span>);
+  
+  <span class="function">circle</span>(x, y, size);
+}</code></pre>
+        
+        <p>This creates a beautiful, chaotic splatter of colorful circles!</p>
+        
+        <h3>Random Movement</h3>
+        
+        <p>Instead of moving in straight lines, let's add some random wiggle:</p>
+        
+        <pre><code><span class="keyword">let</span> x = <span class="number">200</span>;
+<span class="keyword">let</span> y = <span class="number">200</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">background</span>(<span class="number">220</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// Semi-transparent background for trail effect</span>
+  <span class="function">background</span>(<span class="number">220</span>, <span class="number">220</span>, <span class="number">220</span>, <span class="number">25</span>);
+  
+  <span class="comment">// Random walk</span>
+  x += <span class="function">random</span>(-<span class="number">3</span>, <span class="number">3</span>);
+  y += <span class="function">random</span>(-<span class="number">3</span>, <span class="number">3</span>);
+  
+  <span class="function">fill</span>(<span class="number">0</span>);
+  <span class="function">circle</span>(x, y, <span class="number">20</span>);
+}</code></pre>
+        
+        <p>This creates a "random walker" - it wanders around randomly!</p>
+        
+        <h2>2.5 The map() Function - Mathematical Magic!</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/nicMAoW6u1g" title="2.5: The map() Function" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>Okay, this one's a bit mind-bending, but SO useful! The <code>map()</code> function takes a number from one range and maps it to another range. It's like a translator for numbers!</p>
+        
+        <h3>The Problem map() Solves</h3>
+        
+        <p>Let's say you want the mouse position to control the size of a circle. But <code>mouseX</code> goes from 0 to 400 (the width of our canvas), and we want our circle size to go from 10 to 100. How do we convert?</p>
+        
+        <p>This is where <code>map()</code> comes in!</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// Map mouseX (0-400) to circle size (10-100)</span>
+  <span class="keyword">let</span> circleSize = <span class="function">map</span>(mouseX, <span class="number">0</span>, width, <span class="number">10</span>, <span class="number">100</span>);
+  
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">200</span>, circleSize);
+  
+  <span class="comment">// Show the values</span>
+  <span class="function">fill</span>(<span class="number">0</span>);
+  <span class="function">text</span>(<span class="string">"mouseX: "</span> + mouseX, <span class="number">10</span>, <span class="number">20</span>);
+  <span class="function">text</span>(<span class="string">"size: "</span> + <span class="function">round</span>(circleSize), <span class="number">10</span>, <span class="number">40</span>);
+}</code></pre>
+        
+        <h3>How map() Works</h3>
+        
+        <p>The <code>map()</code> function takes 5 parameters:</p>
+        <pre><code>map(value, start1, stop1, start2, stop2)</code></pre>
+        
+        <ul>
+            <li><code>value</code> - The number you want to convert</li>
+            <li><code>start1</code> - The minimum of the current range</li>
+            <li><code>stop1</code> - The maximum of the current range</li>
+            <li><code>start2</code> - The minimum of the target range</li>
+            <li><code>stop2</code> - The maximum of the target range</li>
+        </ul>
+        
+        <p>So <code>map(mouseX, 0, width, 10, 100)</code> means:</p>
+        <ul>
+            <li>Take <code>mouseX</code></li>
+            <li>Which goes from 0 to <code>width</code></li>
+            <li>And convert it to a number from 10 to 100</li>
+        </ul>
+        
+        <h3>Multiple Mappings!</h3>
+        
+        <p>Let's control multiple things with the mouse position:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// Map mouseX to background color</span>
+  <span class="keyword">let</span> bgColor = <span class="function">map</span>(mouseX, <span class="number">0</span>, width, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">background</span>(bgColor);
+  
+  <span class="comment">// Map mouseY to circle color</span>
+  <span class="keyword">let</span> circleColor = <span class="function">map</span>(mouseY, <span class="number">0</span>, height, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">fill</span>(circleColor, <span class="number">0</span>, <span class="number">255</span> - circleColor);
+  
+  <span class="comment">// Map mouseX to circle size</span>
+  <span class="keyword">let</span> size = <span class="function">map</span>(mouseX, <span class="number">0</span>, width, <span class="number">20</span>, <span class="number">200</span>);
+  
+  <span class="comment">// Map mouseY to circle position</span>
+  <span class="keyword">let</span> circleY = <span class="function">map</span>(mouseY, <span class="number">0</span>, height, <span class="number">100</span>, <span class="number">300</span>);
+  
+  <span class="function">circle</span>(<span class="number">200</span>, circleY, size);
+}</code></pre>
+        
+        <p>Move your mouse around and watch how everything changes! The background, color, size, and position all respond to your mouse!</p>
+        
+        <h3>Reverse Mapping</h3>
+        
+        <p>You can even reverse the mapping:</p>
+        
+        <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  
+  <span class="comment">// Normal mapping: left = small, right = big</span>
+  <span class="keyword">let</span> size1 = <span class="function">map</span>(mouseX, <span class="number">0</span>, width, <span class="number">10</span>, <span class="number">100</span>);
+  
+  <span class="comment">// Reverse mapping: left = big, right = small</span>
+  <span class="keyword">let</span> size2 = <span class="function">map</span>(mouseX, <span class="number">0</span>, width, <span class="number">100</span>, <span class="number">10</span>);
+  
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">150</span>, size1);
+  
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">circle</span>(<span class="number">200</span>, <span class="number">250</span>, size2);
+}</code></pre>
+        
+        <h2>2.6 createGraphics() - Drawing Layers</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/TaluaAD9MKA" title="2.6: createGraphics()" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <p>This is a bit advanced, but super cool! <code>createGraphics()</code> lets you create a separate drawing layer - like having multiple transparent sheets of paper you can draw on separately!</p>
+        
+        <pre><code><span class="keyword">let</span> extraCanvas;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  extraCanvas = <span class="function">createGraphics</span>(<span class="number">400</span>, <span class="number">400</span>);
+  extraCanvas.<span class="function">clear</span>();  <span class="comment">// Make it transparent</span>
+  <span class="function">background</span>(<span class="number">220</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="comment">// Draw on the main canvas</span>
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">circle</span>(mouseX, mouseY, <span class="number">50</span>);
+  
+  <span class="comment">// Draw the extra canvas on top</span>
+  <span class="function">image</span>(extraCanvas, <span class="number">0</span>, <span class="number">0</span>);
+  
+  <span class="comment">// Draw on the extra canvas when mouse is pressed</span>
+  <span class="keyword">if</span> (mouseIsPressed) {
+    extraCanvas.<span class="function">fill</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+    extraCanvas.<span class="function">noStroke</span>();
+    extraCanvas.<span class="function">circle</span>(mouseX, mouseY, <span class="number">20</span>);
+  }
+}</code></pre>
+        
+        <p>This creates a painting program where the blue circle follows your mouse, but the red paint stays on screen!</p>
+        
+        <h2>2.7 Practice Exercises</h2>
+        
+        <p>Now it's your turn! Try these exercises to practice using variables:</p>
+        
+        <div class="exercise">
+            <h3>Exercise 2.1: Bouncing Ball</h3>
+            <p>Create a ball that moves horizontally across the screen. When it reaches the edge, make it "teleport" back to the start. Requirements:</p>
+            <ul>
+                <li>Use a variable for the x position</li>
+                <li>Make the ball move by incrementing the variable</li>
+                <li>Reset the position when it goes off screen</li>
+                <li>Bonus: Add a variable for speed!</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 2.2: Growing and Shrinking</h3>
+            <p>Create a circle that grows and shrinks continuously:</p>
+            <ul>
+                <li>Use a variable for the size</li>
+                <li>Use another variable for the growth amount</li>
+                <li>When the circle gets too big OR too small, reverse the growth</li>
+                <li>Hint: You'll need to think about when to make growth positive or negative</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 2.3: Random Colors</h3>
+            <p>Create a sketch where:</p>
+            <ul>
+                <li>The background color changes randomly every time you click</li>
+                <li>Circles appear at random positions with random colors</li>
+                <li>Use variables to store the background color so it doesn't change every frame</li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 2.4: Mouse Follower</h3>
+            <p>Create a circle that follows the mouse but with a delay:</p>
+            <ul>
+                <li>Use variables for the circle's position</li>
+                <li>Instead of setting them directly to mouseX/mouseY, move them gradually toward the mouse</li>
+                <li>Hint: <code>circleX = circleX + (mouseX - circleX) * 0.05</code></li>
+            </ul>
+        </div>
+        
+        <div class="exercise">
+            <h3>Exercise 2.5: Interactive Color Mixer</h3>
+            <p>Use the map() function to create an interactive color mixer:</p>
+            <ul>
+                <li>Map mouseX to the red value (0-255)</li>
+                <li>Map mouseY to the green value (0-255)</li>
+                <li>Keep blue constant or map it to something else</li>
+                <li>Display the RGB values on screen</li>
+            </ul>
+        </div>
+        
+        <div class="exercise" style="background-color: #fff3cd; border-color: #ffecd1;">
+            <h3>Challenge: Fireworks!</h3>
+            <p>Create a simple fireworks effect:</p>
+            <ul>
+                <li>Click to create a "firework" at the mouse position</li>
+                <li>Use variables to store the firework position</li>
+                <li>Create multiple circles that move outward from that position</li>
+                <li>Use random colors</li>
+                <li>Bonus: Make them fade out over time!</li>
+            </ul>
+        </div>
+        
+        <h2>2.8 Common Mistakes and Debugging Tips</h2>
+        
+        <h3>Mistake 1: Forgetting to Declare Variables</h3>
+        
+        <div class="error-example">
+            <pre><code><span class="comment">// Wrong - no let keyword</span>
+x = <span class="number">100</span>;
+
+<span class="comment">// Right</span>
+<span class="keyword">let</span> x = <span class="number">100</span>;</code></pre>
+        </div>
+        
+        <h3>Mistake 2: Re-declaring Variables</h3>
+        
+        <div class="error-example">
+            <pre><code><span class="keyword">let</span> x = <span class="number">100</span>;
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="keyword">let</span> x = <span class="number">200</span>;  <span class="comment">// This creates a NEW variable!</span>
+}
+
+<span class="comment">// Better:</span>
+<span class="keyword">let</span> x = <span class="number">100</span>;
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  x = <span class="number">200</span>;  <span class="comment">// This updates the existing variable</span>
+}</code></pre>
+        </div>
+        
+        <h3>Mistake 3: Variable Scope Issues</h3>
+        
+        <div class="error-example">
+            <pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="keyword">let</span> x = <span class="number">100</span>;  <span class="comment">// Only exists in setup()</span>
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">circle</span>(x, <span class="number">200</span>, <span class="number">50</span>);  <span class="comment">// Error! x doesn't exist here</span>
+}</code></pre>
+        </div>
+        
+        <h3>Debugging with console.log()</h3>
+        
+        <p>When your variables aren't doing what you expect, use <code>console.log()</code> to see their values:</p>
+        
+        <pre><code><span class="keyword">let</span> x = <span class="number">0</span>;
+<span class="keyword">let</span> speed = <span class="number">5</span>;
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">circle</span>(x, <span class="number">200</span>, <span class="number">50</span>);
+  
+  x += speed;
+  
+  <span class="comment">// Debug: see what's happening</span>
+  <span class="function">console.log</span>(<span class="string">"x is: "</span> + x);
+  <span class="function">console.log</span>(<span class="string">"speed is: "</span> + speed);
+}</code></pre>
+        
+        <h2>2.9 What's Next?</h2>
+        
+        <p>Amazing work! You've learned how to use variables to make your sketches dynamic and interactive! You now know:</p>
+        
+        <ul style="font-size: 1.1em;">
+            <li>✓ How to use built-in variables like mouseX and mouseY</li>
+            <li>✓ How to create your own variables with let</li>
+            <li>✓ How to update variables to create animation</li>
+            <li>✓ How to use random() for unpredictable behavior</li>
+            <li>✓ How to use map() to convert between ranges</li>
+            <li>✓ How to debug with console.log()</li>
+        </ul>
+        
+        <p>But wait! What happens when our ball reaches the edge of the screen? How can we make it bounce back instead of disappearing? How can we make our programs make decisions?</p>
+        
+        <p>That's where <strong>CONDITIONALS</strong> come in! In the next chapter, we'll learn how to:</p>
+        <ul>
+            <li>Make decisions with if statements</li>
+            <li>Create bouncing animations</li>
+            <li>Respond to user input</li>
+            <li>Build simple games!</li>
+        </ul>
+        
+        <p style="font-size: 1.2em; text-align: center; margin-top: 40px;">Get ready to give your programs the power to think!</p>
+        
+        <hr style="margin: 40px 0;">
+        
+        <h1>Chapter 3: Conditionals</h1>
+        <p style="text-align: center; color: #7f8c8d;"><em>[Chapter 3 content continues...]</em></p>
+    </div>
+</body>
+</html>
