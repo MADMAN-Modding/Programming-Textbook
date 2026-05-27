@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1: Getting Started — p5.js Textbook</title>
+<style>
+/* ============================================================
+   p5.js Textbook — shared inline stylesheet
+   ============================================================ */
+:root {
+  --bg: #fdfaf3;
+  --bg-panel: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --accent: #ed225d;        /* p5 pink */
+  --accent-dark: #b8174a;
+  --rule: #e8e2d3;
+  --code-bg: #1e1e2e;
+  --code-ink: #f5f5f5;
+
+  --kw: #c084fc;            /* keyword purple */
+  --fn: #60a5fa;            /* function blue */
+  --num: #fb923c;           /* number orange */
+  --com: #9ca3af;           /* comment gray */
+  --str: #86efac;           /* string green */
+  --cls: #fde047;           /* class-name yellow */
+
+  --tip-bg: #e8f5e9;
+  --tip-bd: #66bb6a;
+  --alert-bg: #fff8e1;
+  --alert-bd: #ffb300;
+  --err-bg: #ffebee;
+  --err-bd: #e53935;
+  --ex-bg: #e3f2fd;
+  --ex-bd: #1e88e5;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: "Helvetica Neue", "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(237,34,93,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(96,165,250,0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+.wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Top nav ---------- */
+.chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253,250,243,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+.chapter-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  gap: 12px;
+}
+.chapter-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.chapter-nav a:hover { background: rgba(237,34,93,0.1); color: var(--accent-dark); }
+.chapter-nav .home {
+  font-weight: 700;
+  color: var(--accent);
+}
+.chapter-nav .nav-prev::before { content: "← "; }
+.chapter-nav .nav-next::after  { content: " →"; }
+.chapter-nav .nav-disabled { color: #bbb; pointer-events: none; }
+
+/* ---------- Chapter header ---------- */
+.chapter-header {
+  padding: 56px 0 32px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+.chapter-eyebrow {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.chapter-title {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+.chapter-lede {
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Typography ---------- */
+h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin: 48px 0 12px;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 80px;
+}
+h2 .anchor {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--accent);
+  margin-left: 8px;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor { opacity: 1; }
+
+h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 32px 0 10px;
+}
+
+p { margin: 0 0 16px; }
+a { color: var(--accent-dark); }
+a:hover { color: var(--accent); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol { margin: 0 0 16px; padding-left: 1.5em; }
+li { margin: 6px 0; }
+
+/* ---------- Inline code & code blocks ---------- */
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: rgba(237,34,93,0.08);
+  color: var(--accent-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--mono);
+  font-size: 14.5px;
+  line-height: 1.55;
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0 24px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.keyword    { color: var(--kw); font-weight: 600; }
+.function   { color: var(--fn); }
+.number     { color: var(--num); }
+.comment    { color: var(--com); font-style: italic; }
+.string     { color: var(--str); }
+.class-name { color: var(--cls); font-weight: 600; }
+
+/* ---------- Video container ---------- */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;       /* 16:9 */
+  margin: 20px 0 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  background: #000;
+}
+.video-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-caption {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: -16px 0 24px;
+  text-align: center;
+}
+
+/* ---------- Callouts ---------- */
+.tip, .alert, .error-example, .exercise {
+  padding: 16px 20px 16px 52px;
+  border-radius: 8px;
+  margin: 20px 0;
+  position: relative;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+.tip::before, .alert::before, .error-example::before, .exercise::before {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-size: 22px;
+  line-height: 1;
+}
+.tip            { background: var(--tip-bg);   border-left: 4px solid var(--tip-bd); }
+.tip::before    { content: "💡"; }
+.alert          { background: var(--alert-bg); border-left: 4px solid var(--alert-bd); }
+.alert::before  { content: "⚠️"; }
+.error-example  { background: var(--err-bg);   border-left: 4px solid var(--err-bd); }
+.error-example::before { content: "🐛"; }
+.exercise       { background: var(--ex-bg);    border-left: 4px solid var(--ex-bd); }
+.exercise::before { content: "✏️"; }
+
+.callout-title {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+}
+
+.tip code, .alert code, .error-example code, .exercise code {
+  background: rgba(0,0,0,0.06);
+  color: inherit;
+}
+
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0 24px;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 12px;
+  text-align: left;
+}
+th { background: rgba(0,0,0,0.03); font-weight: 700; }
+
+/* ---------- Footer nav ---------- */
+.chapter-footer {
+  margin-top: 64px;
+  padding: 28px 0 48px;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--sans);
+}
+.chapter-footer a {
+  text-decoration: none;
+  color: var(--ink);
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  flex: 1;
+  background: var(--bg-panel);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.chapter-footer a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+.chapter-footer .label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.chapter-footer .title {
+  font-weight: 700;
+  font-size: 17px;
+}
+.chapter-footer .next { text-align: right; }
+.chapter-footer .disabled { opacity: 0.4; pointer-events: none; }
+
+/* ---------- Index page extras ---------- */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 32px 0;
+}
+.toc-card {
+  display: block;
+  padding: 22px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.toc-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s;
+}
+.toc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+.toc-card:hover::before { transform: scaleX(1); }
+.toc-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.toc-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 6px 0 8px;
+}
+.toc-desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .wrap { padding: 0 18px; }
+  .chapter-nav { font-size: 13px; }
+  .chapter-nav .wrap { gap: 8px; }
+  .chapter-nav a { padding: 6px 6px; }
+  pre { font-size: 13.5px; padding: 14px; }
+  .chapter-footer { flex-direction: column; }
+  .chapter-footer .next { text-align: left; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: white; color: black; font-size: 11pt; }
+  .chapter-nav, .chapter-footer, .video-container { display: none; }
+  pre { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  .tip, .alert, .error-example, .exercise {
+    border: 1px solid #999; background: #f5f5f5 !important; color: black;
+  }
+  a { color: black; text-decoration: underline; }
+}
+
+</style>
+</head>
+<body>
+<nav class="chapter-nav">
+  <div class="wrap">
+    <a class="home" href="index.html">p5.js Textbook</a>
+    <div class="nav-links">
+      <span class="nav-disabled nav-prev">Ch. 0</span>
+      <a href="index.html">Contents</a>
+      <a class="nav-next" href="chapter02.html">Ch. 2</a>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+  <header class="chapter-header">
+    <p class="chapter-eyebrow">Chapter 1</p>
+    <h1 class="chapter-title">Getting Started</h1>
+    <p class="chapter-lede">Canvas, shapes, color, and the rhythm of setup() and draw().</p>
+  </header>
+
+<p>Alright, alright, alright! Welcome to <strong>p5.js</strong>. If you've never written a line of code in your life, or if you've done some and want a friendlier way back in — you are in exactly the right place. p5.js is a JavaScript library for creative coding, and by the end of this chapter you'll have drawn shapes, picked colors, and made your very first animation. Let's go!</p>
+
+<h2 id="what-is-p5">What is p5.js? <a class="anchor" href="#what-is-p5">#</a></h2>
+
+<p>p5.js is the JavaScript reincarnation of <strong>Processing</strong>, a language built for artists, designers, students, and educators to make pictures, animations, and interactive things with code. Instead of building a calculator or a database, you build a little world on a digital canvas — and you watch it come alive.</p>
+
+<p>You don't need to install anything. Head to the <a href="https://editor.p5js.org/" target="_blank" rel="noopener">p5.js Web Editor</a> and you can start coding immediately, right in your browser.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/yPWkPOfnGsw" title="1.1 Introduction to p5.js" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 1.1 — Introduction to p5.js</p>
+
+<h2 id="the-canvas">The Canvas <a class="anchor" href="#the-canvas">#</a></h2>
+
+<p>Everything in p5.js happens on a <strong>canvas</strong>, which is just a rectangle of pixels. You create one inside a special function called <code>setup()</code>, which runs once when the program starts.</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}</code></pre>
+
+<p>That's it! That gives you a 400-pixel wide, 400-pixel tall canvas. You'll see a blank rectangle appear when you run the sketch.</p>
+
+<h3 id="coordinates">Coordinates: not what your math teacher taught you</h3>
+
+<p>Here's the first thing that will surprise you. In math class, <code>(0, 0)</code> sits in the middle of the page and y goes <em>up</em>. In p5.js, <code>(0, 0)</code> is in the <strong>top-left corner</strong> of the canvas, and y goes <em>down</em>. Larger y means lower on the screen.</p>
+
+<pre><code><span class="comment">// On a 400x400 canvas:</span>
+<span class="comment">//   top-left     = (0, 0)</span>
+<span class="comment">//   top-right    = (400, 0)</span>
+<span class="comment">//   bottom-left  = (0, 400)</span>
+<span class="comment">//   bottom-right = (400, 400)</span>
+<span class="comment">//   center       = (200, 200)</span></code></pre>
+
+<div class="tip">
+<span class="callout-title">Heads up</span>
+This flipped y-axis trips up <em>everybody</em> at first. When you mean "higher on screen," type a <em>smaller</em> y.
+</div>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/MXs1cOlidWs" title="1.2 p5.js Coordinates" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 1.2 — p5.js Web Editor</p>
+
+<h2 id="drawing-shapes">Drawing Shapes <a class="anchor" href="#drawing-shapes">#</a></h2>
+
+<p>Once you have a canvas, you can draw on it. Here are the basics:</p>
+
+<pre><code><span class="function">point</span>(x, y);
+<span class="function">line</span>(x1, y1, x2, y2);
+<span class="function">rect</span>(x, y, width, height);
+<span class="function">ellipse</span>(x, y, width, height);  <span class="comment">// circle if width == height</span>
+<span class="function">triangle</span>(x1, y1, x2, y2, x3, y3);</code></pre>
+
+<p>Each one takes some numbers and draws something on the canvas. Let's put a circle right in the middle of a 400×400 canvas:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">100</span>, <span class="number">100</span>);
+}</code></pre>
+
+<div class="tip">
+<span class="callout-title">Where do shapes anchor?</span>
+By default, <code>rect()</code> anchors at its <strong>top-left corner</strong>, but <code>ellipse()</code> anchors at its <strong>center</strong>. You can change rectangles to center-anchor with <code>rectMode(CENTER)</code>.
+</div>
+
+<h2 id="color">Color <a class="anchor" href="#color">#</a></h2>
+
+<p>By default the canvas is gray and everything you draw is white with a thin black outline. You can change that with three friendly functions:</p>
+
+<table>
+<thead><tr><th>Function</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>background(r, g, b)</code></td><td>Fills the entire canvas with a color</td></tr>
+<tr><td><code>fill(r, g, b)</code></td><td>Sets the inside color of shapes drawn after it</td></tr>
+<tr><td><code>stroke(r, g, b)</code></td><td>Sets the outline color of shapes drawn after it</td></tr>
+</tbody>
+</table>
+
+<p>Colors are RGB: three numbers from <code>0</code> to <code>255</code> for <strong>red</strong>, <strong>green</strong>, and <strong>blue</strong>. You can also pass one number for a grayscale value, or use <code>noFill()</code> and <code>noStroke()</code> to turn them off entirely.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/c3TeLi6Ns1E" title="1.3 Shapes and drawing" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 1.3 — Shapes &amp; drawing</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">background</span>(<span class="number">20</span>, <span class="number">20</span>, <span class="number">40</span>);     <span class="comment">// dark navy</span>
+  <span class="function">stroke</span>(<span class="number">255</span>);                 <span class="comment">// white outline</span>
+  <span class="function">strokeWeight</span>(<span class="number">3</span>);
+  <span class="function">fill</span>(<span class="number">237</span>, <span class="number">34</span>, <span class="number">93</span>);          <span class="comment">// p5 pink</span>
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">150</span>, <span class="number">150</span>);
+}</code></pre>
+
+<div class="alert">
+<span class="callout-title">Order matters</span>
+p5 paints shapes in the order you call them, like layers of paint. A <code>background()</code> call <em>erases</em> everything underneath it — so call it first, not last!
+</div>
+
+<h2 id="setup-vs-draw">setup() vs draw() <a class="anchor" href="#setup-vs-draw">#</a></h2>
+
+<p>Static pictures are great, but the real fun starts with <strong>animation</strong>. p5.js gives you a second special function called <code>draw()</code>. Here's the deal:</p>
+
+<ul>
+  <li><strong><code>setup()</code></strong> runs <em>once</em>, at the very start.</li>
+  <li><strong><code>draw()</code></strong> runs <em>over and over</em>, about 60 times per second.</li>
+</ul>
+
+<p>That's the heartbeat. Every line of code inside <code>draw()</code> runs again every frame. That's what makes things move.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/riiJTF5-N7c" title="1.4 Color" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 1.4 — Color</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);             <span class="comment">// runs every frame!</span>
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">80</span>, <span class="number">80</span>);
+}</code></pre>
+
+<p>Right now this looks identical to a static sketch — but trust me, this template is the doorway to everything cool. In the next chapter we'll use it to make things move.</p>
+
+<h2 id="common-mistakes">Common Beginner Mistakes <a class="anchor" href="#common-mistakes">#</a></h2>
+
+<div class="error-example">
+<span class="callout-title">Forgetting the parentheses</span>
+Every function call needs <code>()</code>, even if there's nothing inside. <code>noFill</code> is wrong. <code>noFill()</code> is right.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Mixing up rect and ellipse anchors</span>
+<code>rect(100, 100, 50, 50)</code> draws a rectangle whose top-left is at (100, 100). <code>ellipse(100, 100, 50, 50)</code> draws an ellipse whose <em>center</em> is at (100, 100). If a circle isn't where you expect, this is usually why.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Capital letters matter</span>
+JavaScript is case-sensitive. <code>createCanvas</code> works; <code>CreateCanvas</code> or <code>createcanvas</code> will not.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Putting background() at the bottom of draw()</span>
+If <code>background()</code> is the last thing you call, it paints <em>over</em> everything you just drew. Always call it first inside <code>draw()</code>.
+</div>
+
+<h2 id="exercises">Practice Exercises <a class="anchor" href="#exercises">#</a></h2>
+
+<div class="exercise">
+<span class="callout-title">Exercise 1.1 — Self portrait</span>
+Draw a face on a 400×400 canvas. Use at least one rectangle, one ellipse, one triangle, and one line. Pick your own colors for the background, the face, and the eyes. Bonus: give it hair.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 1.2 — Your school's flag</span>
+Recreate the flag of your school, your country, or your favorite sports team using only basic shapes and colors. No text needed — just shapes.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 1.3 — Predict the order</span>
+Before running it, write down on paper what this sketch will look like. Then run it. Were you right?
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">300</span>, <span class="number">300</span>);
+  <span class="function">background</span>(<span class="number">200</span>);
+  <span class="function">fill</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+  <span class="function">rect</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="number">200</span>, <span class="number">200</span>);
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);
+  <span class="function">ellipse</span>(<span class="number">150</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">150</span>);
+}</code></pre>
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 1.4 — Stretch goal</span>
+Look up <code>arc()</code> and <code>quad()</code> in the <a href="https://p5js.org/reference/" target="_blank" rel="noopener">p5.js reference</a>. Use each of them at least once in a sketch.
+</div>
+
+<p>That's Chapter 1! You've got shapes, color, coordinates, and the <code>setup()</code>/<code>draw()</code> heartbeat. In the next chapter, we're going to plug variables into that heartbeat — and your sketches will finally start to move.</p>
+
+</main>
+<footer class="chapter-footer wrap">
+  <span class="disabled"><span class="label">Previous</span><span class="title">Start of book</span></span>
+  <a class="next" href="chapter02.html"><span class="label">Next →</span><span class="title">Ch. 2: Variables</span></a>
+</footer>
+</body>
+</html>

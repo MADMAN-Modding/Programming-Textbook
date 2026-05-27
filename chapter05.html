@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 5: Functions — p5.js Textbook</title>
+<style>
+/* ============================================================
+   p5.js Textbook — shared inline stylesheet
+   ============================================================ */
+:root {
+  --bg: #fdfaf3;
+  --bg-panel: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --accent: #ed225d;        /* p5 pink */
+  --accent-dark: #b8174a;
+  --rule: #e8e2d3;
+  --code-bg: #1e1e2e;
+  --code-ink: #f5f5f5;
+
+  --kw: #c084fc;            /* keyword purple */
+  --fn: #60a5fa;            /* function blue */
+  --num: #fb923c;           /* number orange */
+  --com: #9ca3af;           /* comment gray */
+  --str: #86efac;           /* string green */
+  --cls: #fde047;           /* class-name yellow */
+
+  --tip-bg: #e8f5e9;
+  --tip-bd: #66bb6a;
+  --alert-bg: #fff8e1;
+  --alert-bd: #ffb300;
+  --err-bg: #ffebee;
+  --err-bd: #e53935;
+  --ex-bg: #e3f2fd;
+  --ex-bd: #1e88e5;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: "Helvetica Neue", "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(237,34,93,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(96,165,250,0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+.wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Top nav ---------- */
+.chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253,250,243,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+.chapter-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  gap: 12px;
+}
+.chapter-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.chapter-nav a:hover { background: rgba(237,34,93,0.1); color: var(--accent-dark); }
+.chapter-nav .home {
+  font-weight: 700;
+  color: var(--accent);
+}
+.chapter-nav .nav-prev::before { content: "← "; }
+.chapter-nav .nav-next::after  { content: " →"; }
+.chapter-nav .nav-disabled { color: #bbb; pointer-events: none; }
+
+/* ---------- Chapter header ---------- */
+.chapter-header {
+  padding: 56px 0 32px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+.chapter-eyebrow {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.chapter-title {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+.chapter-lede {
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Typography ---------- */
+h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin: 48px 0 12px;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 80px;
+}
+h2 .anchor {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--accent);
+  margin-left: 8px;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor { opacity: 1; }
+
+h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 32px 0 10px;
+}
+
+p { margin: 0 0 16px; }
+a { color: var(--accent-dark); }
+a:hover { color: var(--accent); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol { margin: 0 0 16px; padding-left: 1.5em; }
+li { margin: 6px 0; }
+
+/* ---------- Inline code & code blocks ---------- */
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: rgba(237,34,93,0.08);
+  color: var(--accent-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--mono);
+  font-size: 14.5px;
+  line-height: 1.55;
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0 24px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.keyword    { color: var(--kw); font-weight: 600; }
+.function   { color: var(--fn); }
+.number     { color: var(--num); }
+.comment    { color: var(--com); font-style: italic; }
+.string     { color: var(--str); }
+.class-name { color: var(--cls); font-weight: 600; }
+
+/* ---------- Video container ---------- */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;       /* 16:9 */
+  margin: 20px 0 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  background: #000;
+}
+.video-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-caption {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: -16px 0 24px;
+  text-align: center;
+}
+
+/* ---------- Callouts ---------- */
+.tip, .alert, .error-example, .exercise {
+  padding: 16px 20px 16px 52px;
+  border-radius: 8px;
+  margin: 20px 0;
+  position: relative;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+.tip::before, .alert::before, .error-example::before, .exercise::before {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-size: 22px;
+  line-height: 1;
+}
+.tip            { background: var(--tip-bg);   border-left: 4px solid var(--tip-bd); }
+.tip::before    { content: "💡"; }
+.alert          { background: var(--alert-bg); border-left: 4px solid var(--alert-bd); }
+.alert::before  { content: "⚠️"; }
+.error-example  { background: var(--err-bg);   border-left: 4px solid var(--err-bd); }
+.error-example::before { content: "🐛"; }
+.exercise       { background: var(--ex-bg);    border-left: 4px solid var(--ex-bd); }
+.exercise::before { content: "✏️"; }
+
+.callout-title {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+}
+
+.tip code, .alert code, .error-example code, .exercise code {
+  background: rgba(0,0,0,0.06);
+  color: inherit;
+}
+
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0 24px;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 12px;
+  text-align: left;
+}
+th { background: rgba(0,0,0,0.03); font-weight: 700; }
+
+/* ---------- Footer nav ---------- */
+.chapter-footer {
+  margin-top: 64px;
+  padding: 28px 0 48px;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--sans);
+}
+.chapter-footer a {
+  text-decoration: none;
+  color: var(--ink);
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  flex: 1;
+  background: var(--bg-panel);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.chapter-footer a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+.chapter-footer .label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.chapter-footer .title {
+  font-weight: 700;
+  font-size: 17px;
+}
+.chapter-footer .next { text-align: right; }
+.chapter-footer .disabled { opacity: 0.4; pointer-events: none; }
+
+/* ---------- Index page extras ---------- */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 32px 0;
+}
+.toc-card {
+  display: block;
+  padding: 22px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.toc-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s;
+}
+.toc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+.toc-card:hover::before { transform: scaleX(1); }
+.toc-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.toc-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 6px 0 8px;
+}
+.toc-desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .wrap { padding: 0 18px; }
+  .chapter-nav { font-size: 13px; }
+  .chapter-nav .wrap { gap: 8px; }
+  .chapter-nav a { padding: 6px 6px; }
+  pre { font-size: 13.5px; padding: 14px; }
+  .chapter-footer { flex-direction: column; }
+  .chapter-footer .next { text-align: left; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: white; color: black; font-size: 11pt; }
+  .chapter-nav, .chapter-footer, .video-container { display: none; }
+  pre { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  .tip, .alert, .error-example, .exercise {
+    border: 1px solid #999; background: #f5f5f5 !important; color: black;
+  }
+  a { color: black; text-decoration: underline; }
+}
+
+</style>
+</head>
+<body>
+<nav class="chapter-nav">
+  <div class="wrap">
+    <a class="home" href="index.html">p5.js Textbook</a>
+    <div class="nav-links">
+      <a class="nav-prev" href="chapter04.html">Ch. 4</a>
+      <a href="index.html">Contents</a>
+      <a class="nav-next" href="chapter06.html">Ch. 6</a>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+  <header class="chapter-header">
+    <p class="chapter-eyebrow">Chapter 5</p>
+    <h1 class="chapter-title">Functions</h1>
+    <p class="chapter-lede">Parameters, return values, and the magic of scope.</p>
+  </header>
+
+<p>You've already been using functions this whole book! <code>setup()</code>, <code>draw()</code>, <code>ellipse()</code>, <code>fill()</code> — those are all functions. Some came with p5.js, some you wrote yourself. In this chapter we're going to learn to <strong>write our own custom functions</strong>, give them <strong>parameters</strong>, and have them <strong>return</strong> values. This is where your code starts feeling like <em>your</em> code.</p>
+
+<h2 id="why-functions">Why bother writing functions? <a class="anchor" href="#why-functions">#</a></h2>
+
+<p>Three big reasons. Functions let you:</p>
+
+<ol>
+  <li><strong>Stop repeating yourself.</strong> Write the code once, call it as many times as you want.</li>
+  <li><strong>Hide complexity.</strong> "Draw a face" is easier to think about than 20 lines of <code>ellipse()</code> and <code>rect()</code> calls.</li>
+  <li><strong>Reuse code in different places.</strong> Once you have a <code>drawTree()</code> function, you can drop trees anywhere on your canvas.</li>
+</ol>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/wRHAitGzBrg" title="5.1 Functions in p5.js" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 5.1 — Functions in p5.js</p>
+
+<h2 id="defining-functions">Defining a function <a class="anchor" href="#defining-functions">#</a></h2>
+
+<p>You already know the shape, because you've been writing <code>setup()</code> and <code>draw()</code> all along:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">drawFace</span>() {
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">100</span>, <span class="number">100</span>);   <span class="comment">// head</span>
+  <span class="function">ellipse</span>(<span class="number">180</span>, <span class="number">190</span>, <span class="number">10</span>, <span class="number">10</span>);     <span class="comment">// left eye</span>
+  <span class="function">ellipse</span>(<span class="number">220</span>, <span class="number">190</span>, <span class="number">10</span>, <span class="number">10</span>);     <span class="comment">// right eye</span>
+  <span class="function">line</span>(<span class="number">180</span>, <span class="number">220</span>, <span class="number">220</span>, <span class="number">220</span>);     <span class="comment">// mouth</span>
+}</code></pre>
+
+<p>That's a recipe. But the recipe doesn't run until you <strong>call</strong> it:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="function">drawFace</span>();   <span class="comment">// here's the call!</span>
+}</code></pre>
+
+<p>The parentheses are how you say "run this now." Without them, you're just pointing at the recipe.</p>
+
+<h2 id="parameters">Parameters: making functions flexible <a class="anchor" href="#parameters">#</a></h2>
+
+<p>Our <code>drawFace()</code> draws a face in exactly one spot. Boring. Let's let the caller decide <em>where</em> the face goes by adding <strong>parameters</strong>:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">drawFace</span>(x, y) {
+  <span class="function">ellipse</span>(x,      y,      <span class="number">100</span>, <span class="number">100</span>);
+  <span class="function">ellipse</span>(x - <span class="number">20</span>, y - <span class="number">10</span>, <span class="number">10</span>,  <span class="number">10</span>);
+  <span class="function">ellipse</span>(x + <span class="number">20</span>, y - <span class="number">10</span>, <span class="number">10</span>,  <span class="number">10</span>);
+  <span class="function">line</span>(x - <span class="number">20</span>, y + <span class="number">20</span>, x + <span class="number">20</span>, y + <span class="number">20</span>);
+}</code></pre>
+
+<p>Now I can plant a face anywhere:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">600</span>, <span class="number">400</span>);
+  <span class="function">drawFace</span>(<span class="number">150</span>, <span class="number">200</span>);
+  <span class="function">drawFace</span>(<span class="number">450</span>, <span class="number">200</span>);
+}</code></pre>
+
+<p>The <strong>parameters</strong> (<code>x</code>, <code>y</code>) are the names you use inside the function — variables that get filled in with the <strong>arguments</strong> (<code>150</code>, <code>200</code>) you pass in. Same idea as <code>ellipse(x, y, w, h)</code>: somebody who built p5 wrote a function with four parameters, and you keep filling them in.</p>
+
+<div class="tip">
+<span class="callout-title">Add as many parameters as you need</span>
+<code>drawFace(x, y, size, eyeColor)</code> — you can add as many parameters as makes sense for what your function needs to know.
+</div>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/zkc417YapfE" title="5.2 Function parameters" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 5.2 — Function parameters</p>
+
+<h2 id="return-values">Return values <a class="anchor" href="#return-values">#</a></h2>
+
+<p>So far, our functions <em>do</em> things (draw shapes). Sometimes you want a function that <em>computes and gives back a value</em>. That's what <code>return</code> is for.</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">average</span>(a, b) {
+  <span class="keyword">return</span> (a + b) / <span class="number">2</span>;
+}
+
+<span class="keyword">let</span> midX = <span class="function">average</span>(<span class="number">0</span>, <span class="function">width</span>);   <span class="comment">// midX is now 200 on a 400-wide canvas</span></code></pre>
+
+<p>You've been doing this with built-in functions all along! <code>random(100)</code> doesn't <em>do</em> anything visible; it <em>gives you back</em> a number. <code>map(...)</code> too. Same pattern.</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">distance2D</span>(x1, y1, x2, y2) {
+  <span class="keyword">let</span> dx = x2 - x1;
+  <span class="keyword">let</span> dy = y2 - y1;
+  <span class="keyword">return</span> <span class="function">sqrt</span>(dx*dx + dy*dy);
+}</code></pre>
+
+<p>(p5 already has <code>dist()</code> for this — we're just showing how it might look inside.)</p>
+
+<div class="alert">
+<span class="callout-title">return exits the function</span>
+The moment <code>return</code> runs, the function is done. Anything after it doesn't execute. You can use that to bail out early if something's wrong.
+</div>
+
+<h2 id="scope">Scope: where variables live <a class="anchor" href="#scope">#</a></h2>
+
+<p>Every variable has a <strong>scope</strong> — a region of the program where it exists. Variables declared with <code>let</code> or <code>const</code> inside curly braces are <strong>local</strong>: they only exist inside those braces.</p>
+
+<pre><code><span class="keyword">let</span> globalCount = <span class="number">0</span>;     <span class="comment">// global - visible everywhere</span>
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="keyword">let</span> r = <span class="function">random</span>(<span class="number">255</span>);   <span class="comment">// local - only exists inside draw()</span>
+  <span class="function">fill</span>(r);
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">50</span>, <span class="number">50</span>);
+  globalCount = globalCount + <span class="number">1</span>;
+}
+
+<span class="keyword">function</span> <span class="function">mousePressed</span>() {
+  <span class="function">print</span>(globalCount);    <span class="comment">// works! global</span>
+  <span class="function">print</span>(r);             <span class="comment">// ERROR! r doesn't exist here</span>
+}</code></pre>
+
+<p>Why does scope exist? So you don't accidentally clobber things. A counter named <code>i</code> in one function should have nothing to do with a counter named <code>i</code> in another function. Scope keeps them separate.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/qRnUBiTJ66Y" title="5.3 Scope" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 5.3 — Scope</p>
+
+<div class="tip">
+<span class="callout-title">Rule of thumb</span>
+Keep variables as <em>local</em> as you can. If only one function needs it, declare it inside that function. Only make a variable global when many functions truly need to share it (like the position of a bouncing ball that's read in <code>draw()</code> and updated in <code>mousePressed()</code>).
+</div>
+
+<h2 id="putting-it-together">Putting it together <a class="anchor" href="#putting-it-together">#</a></h2>
+
+<p>Let's build something. A function that draws a tree, with parameters for position and size:</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">600</span>, <span class="number">400</span>);
+  <span class="function">background</span>(<span class="number">200</span>, <span class="number">230</span>, <span class="number">255</span>);
+  <span class="comment">// a little forest</span>
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) {
+    <span class="function">drawTree</span>(<span class="function">random</span>(<span class="function">width</span>), <span class="number">350</span>, <span class="function">random</span>(<span class="number">40</span>, <span class="number">90</span>));
+  }
+}
+
+<span class="keyword">function</span> <span class="function">drawTree</span>(x, y, size) {
+  <span class="comment">// trunk</span>
+  <span class="function">fill</span>(<span class="number">90</span>, <span class="number">60</span>, <span class="number">30</span>);
+  <span class="function">noStroke</span>();
+  <span class="function">rect</span>(x - size/<span class="number">10</span>, y - size, size/<span class="number">5</span>, size);
+  <span class="comment">// leaves</span>
+  <span class="function">fill</span>(<span class="number">40</span>, <span class="number">140</span>, <span class="number">60</span>);
+  <span class="function">ellipse</span>(x, y - size, size, size);
+}</code></pre>
+
+<p>Eight random trees, fifteen lines of code. That's the power of functions.</p>
+
+<h2 id="common-mistakes">Common Beginner Mistakes <a class="anchor" href="#common-mistakes">#</a></h2>
+
+<div class="error-example">
+<span class="callout-title">Defining a function but never calling it</span>
+Writing <code>function drawFace() { ... }</code> doesn't draw anything — it just <em>defines the recipe</em>. You also have to call <code>drawFace();</code> somewhere.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Forgetting return</span>
+A function that's supposed to give back a value but has no <code>return</code> statement gives back <code>undefined</code>. If you do math with it, you'll get <code>NaN</code> (Not a Number). Always return.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Using a local variable outside its function</span>
+A variable declared inside one function doesn't exist in another. If you need it everywhere, declare it at the top of the sketch (global), or pass it in as a parameter.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Naming a custom function the same as a p5 function</span>
+If you write <code>function draw() { ... }</code> twice, you've overridden the first one. If you accidentally write <code>function ellipse() { ... }</code>, you've broken p5's built-in <code>ellipse</code>. Pick distinctive names.
+</div>
+
+<h2 id="exercises">Practice Exercises <a class="anchor" href="#exercises">#</a></h2>
+
+<div class="exercise">
+<span class="callout-title">Exercise 5.1 — drawCar(x, y, color)</span>
+Write a function that draws a simple car at a given position with a given color. Call it three times to draw a parking lot with three different cars.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 5.2 — Polygons made easy</span>
+Write <code>regularPolygon(x, y, radius, sides)</code> that draws a regular polygon (triangle, square, pentagon, hexagon, …) with the given number of sides. Hint: use a loop and trig — <code>cos()</code> and <code>sin()</code> with angles spread evenly around <code>TWO_PI</code>.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 5.3 — return practice</span>
+Write a function <code>randomColor()</code> that doesn't take any parameters but returns a random color built with <code>color(r, g, b)</code>. Use it inside draw() to pick a new <code>fill()</code> each frame.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 5.4 — Scope detective</span>
+Look at this code. Will it work? If not, why not? Fix it.
+<pre><code><span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  <span class="keyword">let</span> size = <span class="number">50</span>;
+}
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">ellipse</span>(<span class="number">200</span>, <span class="number">200</span>, size, size);
+}</code></pre>
+</div>
+
+<p>Functions: ✅. Now we're going to combine functions, variables, and shapes into one neat package called an <strong>object</strong>. Buckle up — Chapter 6 is where everything starts clicking together.</p>
+
+</main>
+<footer class="chapter-footer wrap">
+  <a href="chapter04.html"><span class="label">← Previous</span><span class="title">Ch. 4: Loops</span></a>
+  <a class="next" href="chapter06.html"><span class="label">Next →</span><span class="title">Ch. 6: Objects</span></a>
+</footer>
+</body>
+</html>

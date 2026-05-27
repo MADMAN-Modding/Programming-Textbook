@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 6: Objects — p5.js Textbook</title>
+<style>
+/* ============================================================
+   p5.js Textbook — shared inline stylesheet
+   ============================================================ */
+:root {
+  --bg: #fdfaf3;
+  --bg-panel: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --accent: #ed225d;        /* p5 pink */
+  --accent-dark: #b8174a;
+  --rule: #e8e2d3;
+  --code-bg: #1e1e2e;
+  --code-ink: #f5f5f5;
+
+  --kw: #c084fc;            /* keyword purple */
+  --fn: #60a5fa;            /* function blue */
+  --num: #fb923c;           /* number orange */
+  --com: #9ca3af;           /* comment gray */
+  --str: #86efac;           /* string green */
+  --cls: #fde047;           /* class-name yellow */
+
+  --tip-bg: #e8f5e9;
+  --tip-bd: #66bb6a;
+  --alert-bg: #fff8e1;
+  --alert-bd: #ffb300;
+  --err-bg: #ffebee;
+  --err-bd: #e53935;
+  --ex-bg: #e3f2fd;
+  --ex-bd: #1e88e5;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: "Helvetica Neue", "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(237,34,93,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(96,165,250,0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+.wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Top nav ---------- */
+.chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253,250,243,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+.chapter-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  gap: 12px;
+}
+.chapter-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.chapter-nav a:hover { background: rgba(237,34,93,0.1); color: var(--accent-dark); }
+.chapter-nav .home {
+  font-weight: 700;
+  color: var(--accent);
+}
+.chapter-nav .nav-prev::before { content: "← "; }
+.chapter-nav .nav-next::after  { content: " →"; }
+.chapter-nav .nav-disabled { color: #bbb; pointer-events: none; }
+
+/* ---------- Chapter header ---------- */
+.chapter-header {
+  padding: 56px 0 32px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+.chapter-eyebrow {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.chapter-title {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+.chapter-lede {
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Typography ---------- */
+h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin: 48px 0 12px;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 80px;
+}
+h2 .anchor {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--accent);
+  margin-left: 8px;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor { opacity: 1; }
+
+h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 32px 0 10px;
+}
+
+p { margin: 0 0 16px; }
+a { color: var(--accent-dark); }
+a:hover { color: var(--accent); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol { margin: 0 0 16px; padding-left: 1.5em; }
+li { margin: 6px 0; }
+
+/* ---------- Inline code & code blocks ---------- */
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: rgba(237,34,93,0.08);
+  color: var(--accent-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--mono);
+  font-size: 14.5px;
+  line-height: 1.55;
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0 24px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.keyword    { color: var(--kw); font-weight: 600; }
+.function   { color: var(--fn); }
+.number     { color: var(--num); }
+.comment    { color: var(--com); font-style: italic; }
+.string     { color: var(--str); }
+.class-name { color: var(--cls); font-weight: 600; }
+
+/* ---------- Video container ---------- */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;       /* 16:9 */
+  margin: 20px 0 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  background: #000;
+}
+.video-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-caption {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: -16px 0 24px;
+  text-align: center;
+}
+
+/* ---------- Callouts ---------- */
+.tip, .alert, .error-example, .exercise {
+  padding: 16px 20px 16px 52px;
+  border-radius: 8px;
+  margin: 20px 0;
+  position: relative;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+.tip::before, .alert::before, .error-example::before, .exercise::before {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-size: 22px;
+  line-height: 1;
+}
+.tip            { background: var(--tip-bg);   border-left: 4px solid var(--tip-bd); }
+.tip::before    { content: "💡"; }
+.alert          { background: var(--alert-bg); border-left: 4px solid var(--alert-bd); }
+.alert::before  { content: "⚠️"; }
+.error-example  { background: var(--err-bg);   border-left: 4px solid var(--err-bd); }
+.error-example::before { content: "🐛"; }
+.exercise       { background: var(--ex-bg);    border-left: 4px solid var(--ex-bd); }
+.exercise::before { content: "✏️"; }
+
+.callout-title {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+}
+
+.tip code, .alert code, .error-example code, .exercise code {
+  background: rgba(0,0,0,0.06);
+  color: inherit;
+}
+
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0 24px;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 12px;
+  text-align: left;
+}
+th { background: rgba(0,0,0,0.03); font-weight: 700; }
+
+/* ---------- Footer nav ---------- */
+.chapter-footer {
+  margin-top: 64px;
+  padding: 28px 0 48px;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--sans);
+}
+.chapter-footer a {
+  text-decoration: none;
+  color: var(--ink);
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  flex: 1;
+  background: var(--bg-panel);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.chapter-footer a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+.chapter-footer .label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.chapter-footer .title {
+  font-weight: 700;
+  font-size: 17px;
+}
+.chapter-footer .next { text-align: right; }
+.chapter-footer .disabled { opacity: 0.4; pointer-events: none; }
+
+/* ---------- Index page extras ---------- */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 32px 0;
+}
+.toc-card {
+  display: block;
+  padding: 22px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.toc-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s;
+}
+.toc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+.toc-card:hover::before { transform: scaleX(1); }
+.toc-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.toc-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 6px 0 8px;
+}
+.toc-desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .wrap { padding: 0 18px; }
+  .chapter-nav { font-size: 13px; }
+  .chapter-nav .wrap { gap: 8px; }
+  .chapter-nav a { padding: 6px 6px; }
+  pre { font-size: 13.5px; padding: 14px; }
+  .chapter-footer { flex-direction: column; }
+  .chapter-footer .next { text-align: left; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: white; color: black; font-size: 11pt; }
+  .chapter-nav, .chapter-footer, .video-container { display: none; }
+  pre { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  .tip, .alert, .error-example, .exercise {
+    border: 1px solid #999; background: #f5f5f5 !important; color: black;
+  }
+  a { color: black; text-decoration: underline; }
+}
+
+</style>
+</head>
+<body>
+<nav class="chapter-nav">
+  <div class="wrap">
+    <a class="home" href="index.html">p5.js Textbook</a>
+    <div class="nav-links">
+      <a class="nav-prev" href="chapter05.html">Ch. 5</a>
+      <a href="index.html">Contents</a>
+      <a class="nav-next" href="chapter07.html">Ch. 7</a>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+  <header class="chapter-header">
+    <p class="chapter-eyebrow">Chapter 6</p>
+    <h1 class="chapter-title">Objects</h1>
+    <p class="chapter-lede">ES6 classes: constructor, methods, this, and instances.</p>
+  </header>
+
+<p>Alright, alright, here we go. Up to now we've kept data in loose variables — <code>x</code>, <code>y</code>, <code>xspeed</code>, <code>yspeed</code> — and behavior in separate functions. That works for one bouncing ball. But what if we want <em>fifty</em> bouncing balls? Fifty x's? Fifty y's? Yikes. We need a way to <strong>bundle data and behavior together</strong>. That's an <strong>object</strong>. And in modern JavaScript, we make objects with <strong>classes</strong>.</p>
+
+<h2 id="the-idea">The big idea <a class="anchor" href="#the-idea">#</a></h2>
+
+<p>An object is a thing that has <strong>properties</strong> (data) and <strong>methods</strong> (functions that belong to it). A <strong>class</strong> is the blueprint that describes how to make those things.</p>
+
+<p>Think of it like a cookie cutter. The cutter (<em>class</em>) describes the shape. Every time you press it into dough, you get a new cookie (<em>instance</em>). They all share the same shape, but each cookie is its own cookie.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/xG2Vbnv0wvg" title="6.1 Introduction to Object-Oriented Programming" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 6.1 — Intro to Object-Oriented Programming</p>
+
+<h2 id="defining-a-class">Defining a class <a class="anchor" href="#defining-a-class">#</a></h2>
+
+<p>Here's a <code>Ball</code> class. Read the whole thing first, then we'll break it down.</p>
+
+<pre><code><span class="keyword">class</span> <span class="class-name">Ball</span> {
+  <span class="function">constructor</span>(x, y, diameter) {
+    <span class="keyword">this</span>.x = x;
+    <span class="keyword">this</span>.y = y;
+    <span class="keyword">this</span>.diameter = diameter;
+    <span class="keyword">this</span>.xspeed = <span class="function">random</span>(-<span class="number">3</span>, <span class="number">3</span>);
+    <span class="keyword">this</span>.yspeed = <span class="function">random</span>(-<span class="number">3</span>, <span class="number">3</span>);
+  }
+
+  <span class="function">move</span>() {
+    <span class="keyword">this</span>.x += <span class="keyword">this</span>.xspeed;
+    <span class="keyword">this</span>.y += <span class="keyword">this</span>.yspeed;
+  }
+
+  <span class="function">bounce</span>() {
+    <span class="keyword">if</span> (<span class="keyword">this</span>.x &lt; <span class="number">0</span> || <span class="keyword">this</span>.x &gt; <span class="function">width</span>)  <span class="keyword">this</span>.xspeed *= -<span class="number">1</span>;
+    <span class="keyword">if</span> (<span class="keyword">this</span>.y &lt; <span class="number">0</span> || <span class="keyword">this</span>.y &gt; <span class="function">height</span>) <span class="keyword">this</span>.yspeed *= -<span class="number">1</span>;
+  }
+
+  <span class="function">show</span>() {
+    <span class="function">fill</span>(<span class="number">237</span>, <span class="number">34</span>, <span class="number">93</span>);
+    <span class="function">ellipse</span>(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y, <span class="keyword">this</span>.diameter, <span class="keyword">this</span>.diameter);
+  }
+}</code></pre>
+
+<p>Three things to notice:</p>
+
+<ol>
+  <li>The <code>class</code> keyword, followed by the class name (capitalized — that's the convention).</li>
+  <li>A special function called <code>constructor()</code>. It runs <em>once</em>, when you create a new ball, and it sets up the initial state.</li>
+  <li>Other functions (<code>move</code>, <code>bounce</code>, <code>show</code>) called <strong>methods</strong>. They are this class's behaviors.</li>
+</ol>
+
+<div class="alert">
+<span class="callout-title">Why no commas?</span>
+Inside a class, methods are <strong>not</strong> separated by commas. Just write them one after the other. This trips up beginners coming from older JavaScript object syntax — leave the commas out!
+</div>
+
+<h2 id="this">What is "this"? <a class="anchor" href="#this">#</a></h2>
+
+<p>The keyword <code>this</code> means <em>"the specific object that this method is being called on."</em> When you write <code>this.x = x</code> in the constructor, you're saying "save the incoming <code>x</code> value as a property of this specific ball."</p>
+
+<p>Without <code>this</code>, your class wouldn't know whether you mean ball #1's x or ball #2's x. The <code>this</code> makes it crystal clear: this method, right now, is operating on this specific instance.</p>
+
+<div class="tip">
+<span class="callout-title">Forgot <code>this.</code>?</span>
+The single most common bug in OOP code. If you write <code>x += xspeed</code> inside a method instead of <code>this.x += this.xspeed</code>, JavaScript will look for global <code>x</code> and <code>xspeed</code> variables. Spoiler: they don't exist. Your ball won't move and your console will fill with errors.
+</div>
+
+<h2 id="creating-instances">Creating instances with new <a class="anchor" href="#creating-instances">#</a></h2>
+
+<p>Defining a class doesn't create anything yet — it's just a blueprint. To <em>actually make a ball</em>, you use the <code>new</code> keyword:</p>
+
+<pre><code><span class="keyword">let</span> ball;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  ball = <span class="keyword">new</span> <span class="class-name">Ball</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">40</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  ball.<span class="function">move</span>();
+  ball.<span class="function">bounce</span>();
+  ball.<span class="function">show</span>();
+}</code></pre>
+
+<p>The variable <code>ball</code> now holds an instance of the <code>Ball</code> class. You access its methods with dot notation: <code>ball.move()</code>, <code>ball.show()</code>. You can also peek at its data: <code>ball.x</code>, <code>ball.diameter</code>.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/T-HGdc8L-7w" title="6.2 Defining a Class" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 6.2 — Defining a Class</p>
+
+<h2 id="multiple-instances">Multiple instances — the payoff <a class="anchor" href="#multiple-instances">#</a></h2>
+
+<p>Here's where it gets <em>really</em> good. Now that you have a class, making fifty balls is just fifty calls to <code>new Ball(...)</code>. Each one has its own x, y, and speed. They all know how to move and draw themselves.</p>
+
+<pre><code><span class="keyword">let</span> ball1, ball2, ball3;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+  ball1 = <span class="keyword">new</span> <span class="class-name">Ball</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">30</span>);
+  ball2 = <span class="keyword">new</span> <span class="class-name">Ball</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">50</span>);
+  ball3 = <span class="keyword">new</span> <span class="class-name">Ball</span>(<span class="number">300</span>, <span class="number">100</span>, <span class="number">20</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  ball1.<span class="function">move</span>();  ball1.<span class="function">bounce</span>();  ball1.<span class="function">show</span>();
+  ball2.<span class="function">move</span>();  ball2.<span class="function">bounce</span>();  ball2.<span class="function">show</span>();
+  ball3.<span class="function">move</span>();  ball3.<span class="function">bounce</span>();  ball3.<span class="function">show</span>();
+}</code></pre>
+
+<p>Three balls, each with their own state, all running through the same logic. Pretty good, right? But you can probably feel that this is going to get out of hand fast. <code>ball50</code>? <code>ball100</code>? In Chapter 7 we'll fix this with arrays, and you'll be making thousands.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/rHiSsgFRgx4" title="6.3 Objects and Instances" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 6.3 — Objects and Instances</p>
+
+<h2 id="why-classes-not-old-style">Why classes and not the old way? <a class="anchor" href="#why-classes-not-old-style">#</a></h2>
+
+<p>You might see older Dan Shiffman videos that use "constructor functions" — a different way of making objects that JavaScript had before ES6 added classes in 2015. Both work. But classes are clearer, modern, and what you'll see in every other language (Java, Python, C++, Swift, …). It's also what's on the AP CSA exam. We're going with classes.</p>
+
+<div class="tip">
+<span class="callout-title">A naming convention worth keeping</span>
+Class names are <code>PascalCase</code> (<code>Ball</code>, <code>Particle</code>, <code>FlappyBird</code>). Instance variables are <code>camelCase</code> (<code>ball</code>, <code>myBird</code>). Methods are <code>camelCase</code> too. This isn't enforced by JavaScript — it's just how people read code.
+</div>
+
+<h2 id="common-mistakes">Common Beginner Mistakes <a class="anchor" href="#common-mistakes">#</a></h2>
+
+<div class="error-example">
+<span class="callout-title">Forgetting <code>this.</code></span>
+The #1 mistake. Inside a method, every reference to the object's own properties needs <code>this.</code> in front. Not "x", not "xspeed" — <code>this.x</code> and <code>this.xspeed</code>.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Forgetting <code>new</code></span>
+<code>let ball = Ball(100, 100, 40);</code> — without <code>new</code>, you've just called the class as a function, and you'll get a confusing error. Always use <code>new ClassName(...)</code>.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Putting commas between methods</span>
+Inside a <code>class { ... }</code> block, methods are <em>not</em> separated by commas. Just stack them one after another.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Defining the class inside setup()</span>
+Define your classes at the top level of your sketch, outside of <code>setup()</code> and <code>draw()</code>. Inside <code>setup()</code> you should be <em>using</em> them with <code>new</code>, not defining them.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Lowercasing the class name</span>
+JavaScript won't <em>force</em> you to capitalize class names, but everybody does. <code>new ball(...)</code> looks like a function call; <code>new Ball(...)</code> screams "this is a class."
+</div>
+
+<h2 id="exercises">Practice Exercises <a class="anchor" href="#exercises">#</a></h2>
+
+<div class="exercise">
+<span class="callout-title">Exercise 6.1 — Build a Car class</span>
+Make a <code>Car</code> class with properties for x, y, and color. Give it a <code>move()</code> method that drives it to the right and wraps to the left when it goes off-screen, and a <code>show()</code> method that draws it. Make three different colored cars.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 6.2 — A class for your face</span>
+Turn your self-portrait sketch into a <code>Face</code> class with parameters for position, size, and skin color. Draw a row of three faces.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 6.3 — Bouncing balls of different sizes</span>
+Make three Ball instances with different starting positions, sizes, and speeds. Add a property <code>this.color</code> set inside the constructor (with <code>random(255)</code>) so each ball has its own random color.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 6.4 — Mouse-controlled ball</span>
+Add a method <code>followMouse()</code> to the Ball class that moves the ball toward the mouse position a little bit each frame. Hint: <code>this.x += (mouseX - this.x) * 0.05;</code>.
+</div>
+
+<p>Classes — done. You now have the conceptual core of object-oriented programming, the same model used in every major programming language. In our final chapter, we'll learn to keep <strong>collections</strong> of these objects with arrays — and that's when our sketches really come alive.</p>
+
+</main>
+<footer class="chapter-footer wrap">
+  <a href="chapter05.html"><span class="label">← Previous</span><span class="title">Ch. 5: Functions</span></a>
+  <a class="next" href="chapter07.html"><span class="label">Next →</span><span class="title">Ch. 7: Arrays</span></a>
+</footer>
+</body>
+</html>

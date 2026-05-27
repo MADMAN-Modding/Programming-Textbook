@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3: Conditionals — p5.js Textbook</title>
+<style>
+/* ============================================================
+   p5.js Textbook — shared inline stylesheet
+   ============================================================ */
+:root {
+  --bg: #fdfaf3;
+  --bg-panel: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --accent: #ed225d;        /* p5 pink */
+  --accent-dark: #b8174a;
+  --rule: #e8e2d3;
+  --code-bg: #1e1e2e;
+  --code-ink: #f5f5f5;
+
+  --kw: #c084fc;            /* keyword purple */
+  --fn: #60a5fa;            /* function blue */
+  --num: #fb923c;           /* number orange */
+  --com: #9ca3af;           /* comment gray */
+  --str: #86efac;           /* string green */
+  --cls: #fde047;           /* class-name yellow */
+
+  --tip-bg: #e8f5e9;
+  --tip-bd: #66bb6a;
+  --alert-bg: #fff8e1;
+  --alert-bd: #ffb300;
+  --err-bg: #ffebee;
+  --err-bd: #e53935;
+  --ex-bg: #e3f2fd;
+  --ex-bd: #1e88e5;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: "Helvetica Neue", "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(237,34,93,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(96,165,250,0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+.wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Top nav ---------- */
+.chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253,250,243,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+.chapter-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  gap: 12px;
+}
+.chapter-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.chapter-nav a:hover { background: rgba(237,34,93,0.1); color: var(--accent-dark); }
+.chapter-nav .home {
+  font-weight: 700;
+  color: var(--accent);
+}
+.chapter-nav .nav-prev::before { content: "← "; }
+.chapter-nav .nav-next::after  { content: " →"; }
+.chapter-nav .nav-disabled { color: #bbb; pointer-events: none; }
+
+/* ---------- Chapter header ---------- */
+.chapter-header {
+  padding: 56px 0 32px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+.chapter-eyebrow {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.chapter-title {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+.chapter-lede {
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Typography ---------- */
+h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin: 48px 0 12px;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 80px;
+}
+h2 .anchor {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--accent);
+  margin-left: 8px;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor { opacity: 1; }
+
+h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 32px 0 10px;
+}
+
+p { margin: 0 0 16px; }
+a { color: var(--accent-dark); }
+a:hover { color: var(--accent); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol { margin: 0 0 16px; padding-left: 1.5em; }
+li { margin: 6px 0; }
+
+/* ---------- Inline code & code blocks ---------- */
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: rgba(237,34,93,0.08);
+  color: var(--accent-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--mono);
+  font-size: 14.5px;
+  line-height: 1.55;
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0 24px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.keyword    { color: var(--kw); font-weight: 600; }
+.function   { color: var(--fn); }
+.number     { color: var(--num); }
+.comment    { color: var(--com); font-style: italic; }
+.string     { color: var(--str); }
+.class-name { color: var(--cls); font-weight: 600; }
+
+/* ---------- Video container ---------- */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;       /* 16:9 */
+  margin: 20px 0 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  background: #000;
+}
+.video-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-caption {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: -16px 0 24px;
+  text-align: center;
+}
+
+/* ---------- Callouts ---------- */
+.tip, .alert, .error-example, .exercise {
+  padding: 16px 20px 16px 52px;
+  border-radius: 8px;
+  margin: 20px 0;
+  position: relative;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+.tip::before, .alert::before, .error-example::before, .exercise::before {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-size: 22px;
+  line-height: 1;
+}
+.tip            { background: var(--tip-bg);   border-left: 4px solid var(--tip-bd); }
+.tip::before    { content: "💡"; }
+.alert          { background: var(--alert-bg); border-left: 4px solid var(--alert-bd); }
+.alert::before  { content: "⚠️"; }
+.error-example  { background: var(--err-bg);   border-left: 4px solid var(--err-bd); }
+.error-example::before { content: "🐛"; }
+.exercise       { background: var(--ex-bg);    border-left: 4px solid var(--ex-bd); }
+.exercise::before { content: "✏️"; }
+
+.callout-title {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+}
+
+.tip code, .alert code, .error-example code, .exercise code {
+  background: rgba(0,0,0,0.06);
+  color: inherit;
+}
+
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0 24px;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 12px;
+  text-align: left;
+}
+th { background: rgba(0,0,0,0.03); font-weight: 700; }
+
+/* ---------- Footer nav ---------- */
+.chapter-footer {
+  margin-top: 64px;
+  padding: 28px 0 48px;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--sans);
+}
+.chapter-footer a {
+  text-decoration: none;
+  color: var(--ink);
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  flex: 1;
+  background: var(--bg-panel);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.chapter-footer a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+.chapter-footer .label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.chapter-footer .title {
+  font-weight: 700;
+  font-size: 17px;
+}
+.chapter-footer .next { text-align: right; }
+.chapter-footer .disabled { opacity: 0.4; pointer-events: none; }
+
+/* ---------- Index page extras ---------- */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 32px 0;
+}
+.toc-card {
+  display: block;
+  padding: 22px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.toc-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s;
+}
+.toc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+.toc-card:hover::before { transform: scaleX(1); }
+.toc-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.toc-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 6px 0 8px;
+}
+.toc-desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .wrap { padding: 0 18px; }
+  .chapter-nav { font-size: 13px; }
+  .chapter-nav .wrap { gap: 8px; }
+  .chapter-nav a { padding: 6px 6px; }
+  pre { font-size: 13.5px; padding: 14px; }
+  .chapter-footer { flex-direction: column; }
+  .chapter-footer .next { text-align: left; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: white; color: black; font-size: 11pt; }
+  .chapter-nav, .chapter-footer, .video-container { display: none; }
+  pre { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  .tip, .alert, .error-example, .exercise {
+    border: 1px solid #999; background: #f5f5f5 !important; color: black;
+  }
+  a { color: black; text-decoration: underline; }
+}
+
+</style>
+</head>
+<body>
+<nav class="chapter-nav">
+  <div class="wrap">
+    <a class="home" href="index.html">p5.js Textbook</a>
+    <div class="nav-links">
+      <a class="nav-prev" href="chapter02.html">Ch. 2</a>
+      <a href="index.html">Contents</a>
+      <a class="nav-next" href="chapter04.html">Ch. 4</a>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+  <header class="chapter-header">
+    <p class="chapter-eyebrow">Chapter 3</p>
+    <h1 class="chapter-title">Conditionals</h1>
+    <p class="chapter-lede">if / else, booleans, logical operators, and a bouncing ball.</p>
+  </header>
+
+<p>Alright, alright, alright! In Chapter 2 we made things <em>move</em>. But our shapes were dumb — they just kept going, right off the edge of the canvas, never to be seen again. In this chapter we're going to give them a <strong>brain</strong>. A simple one. We're going to teach them how to make a decision. That's what conditionals are for. Let's go!</p>
+
+<h2 id="if-statement">The if statement <a class="anchor" href="#if-statement">#</a></h2>
+
+<p>A conditional says: <em>"If this thing is true, run this code. Otherwise, skip it."</em> Here's the basic shape:</p>
+
+<pre><code><span class="keyword">if</span> (something is true) {
+  <span class="comment">// run this code</span>
+}</code></pre>
+
+<p>For example, "if the mouse is on the right half of the canvas, paint the background red":</p>
+
+<pre><code><span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="keyword">if</span> (mouseX &gt; <span class="number">200</span>) {
+    <span class="function">background</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+  }
+}</code></pre>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/1Osb_iGDdjk" title="3.1 Conditional Statements" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 3.1 — Conditional Statements</p>
+
+<h2 id="comparison">Comparison operators <a class="anchor" href="#comparison">#</a></h2>
+
+<p>The thing inside the parentheses needs to be something that JavaScript can answer with <em>yes</em> or <em>no</em>. These operators are the questions you can ask:</p>
+
+<table>
+<thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>&gt;</code></td><td>greater than</td><td><code>mouseX &gt; 200</code></td></tr>
+<tr><td><code>&lt;</code></td><td>less than</td><td><code>y &lt; height</code></td></tr>
+<tr><td><code>&gt;=</code></td><td>greater than or equal to</td><td><code>x &gt;= 100</code></td></tr>
+<tr><td><code>&lt;=</code></td><td>less than or equal to</td><td><code>score &lt;= 0</code></td></tr>
+<tr><td><code>==</code></td><td>equal to (loose)</td><td><code>x == 10</code></td></tr>
+<tr><td><code>===</code></td><td>equal to (strict)</td><td><code>x === 10</code></td></tr>
+<tr><td><code>!=</code> / <code>!==</code></td><td>not equal to</td><td><code>x !== 0</code></td></tr>
+</tbody>
+</table>
+
+<div class="alert">
+<span class="callout-title">Prefer === over ==</span>
+JavaScript's <code>==</code> tries to convert types before comparing, which leads to weirdness (<code>"5" == 5</code> is true!). The triple equals <code>===</code> demands they be exactly the same. <strong>Use === unless you have a really good reason not to.</strong>
+</div>
+
+<h2 id="else">else and else if <a class="anchor" href="#else">#</a></h2>
+
+<p>What if you want code to run when the condition is <em>not</em> true? Add an <code>else</code>:</p>
+
+<pre><code><span class="keyword">if</span> (mouseX &gt; <span class="number">200</span>) {
+  <span class="function">background</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);    <span class="comment">// right side: red</span>
+} <span class="keyword">else</span> {
+  <span class="function">background</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);    <span class="comment">// left side: blue</span>
+}</code></pre>
+
+<p>Need more than two branches? Chain them with <code>else if</code>:</p>
+
+<pre><code><span class="keyword">if</span> (mouseX &lt; <span class="number">133</span>) {
+  <span class="function">background</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);
+} <span class="keyword">else if</span> (mouseX &lt; <span class="number">266</span>) {
+  <span class="function">background</span>(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>);
+} <span class="keyword">else</span> {
+  <span class="function">background</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);
+}</code></pre>
+
+<p>p5 checks them top-to-bottom and runs <em>only the first one</em> that's true. As soon as one matches, it skips the rest.</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/LO3Awjn_gyU" title="3.2 The Bouncing Ball" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 3.2 — The Bouncing Ball</p>
+
+<h2 id="bouncing-ball">The bouncing ball <a class="anchor" href="#bouncing-ball">#</a></h2>
+
+<p>Here's the canonical example. We have a ball with a position <code>x</code> and a speed <code>xspeed</code>. Every frame, we add the speed to the position. When the ball hits the edge of the canvas, we <strong>reverse</strong> the speed. That's bouncing.</p>
+
+<pre><code><span class="keyword">let</span> x = <span class="number">200</span>;
+<span class="keyword">let</span> y = <span class="number">200</span>;
+<span class="keyword">let</span> xspeed = <span class="number">3</span>;
+<span class="keyword">let</span> yspeed = <span class="number">2</span>;
+
+<span class="keyword">function</span> <span class="function">setup</span>() {
+  <span class="function">createCanvas</span>(<span class="number">400</span>, <span class="number">400</span>);
+}
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="function">background</span>(<span class="number">220</span>);
+  <span class="function">fill</span>(<span class="number">237</span>, <span class="number">34</span>, <span class="number">93</span>);
+  <span class="function">ellipse</span>(x, y, <span class="number">40</span>, <span class="number">40</span>);
+
+  x += xspeed;
+  y += yspeed;
+
+  <span class="comment">// bounce off the right or left wall</span>
+  <span class="keyword">if</span> (x &gt; <span class="function">width</span> || x &lt; <span class="number">0</span>) {
+    xspeed = -xspeed;
+  }
+  <span class="comment">// bounce off the top or bottom</span>
+  <span class="keyword">if</span> (y &gt; <span class="function">height</span> || y &lt; <span class="number">0</span>) {
+    yspeed = -yspeed;
+  }
+}</code></pre>
+
+<p>Read that <code>xspeed = -xspeed;</code> line. If <code>xspeed</code> was <code>3</code>, now it's <code>-3</code>. The ball was moving right; now it moves left. That single line is the entire trick.</p>
+
+<div class="tip">
+<span class="callout-title">The radius problem</span>
+This version checks the <em>center</em> of the ball against the wall, so half the ball pokes through before bouncing. Fix: use the ball's radius. Try <code>if (x &gt; width - 20 || x &lt; 20)</code> for a 40-pixel-wide ball.
+</div>
+
+<h2 id="logical-operators">Logical operators: && and || <a class="anchor" href="#logical-operators">#</a></h2>
+
+<p>You can glue multiple conditions together:</p>
+
+<table>
+<thead><tr><th>Operator</th><th>Means</th><th>True when</th></tr></thead>
+<tbody>
+<tr><td><code>&amp;&amp;</code></td><td>and</td><td>both sides are true</td></tr>
+<tr><td><code>||</code></td><td>or</td><td>at least one side is true</td></tr>
+<tr><td><code>!</code></td><td>not</td><td>flips true to false and vice versa</td></tr>
+</tbody>
+</table>
+
+<pre><code><span class="comment">// inside a 100x100 box at the top-left?</span>
+<span class="keyword">if</span> (mouseX &lt; <span class="number">100</span> &amp;&amp; mouseY &lt; <span class="number">100</span>) {
+  <span class="function">fill</span>(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>);
+}
+
+<span class="comment">// mouse off either edge?</span>
+<span class="keyword">if</span> (mouseX &lt; <span class="number">0</span> || mouseX &gt; <span class="function">width</span>) {
+  <span class="function">print</span>(<span class="string">"out of bounds!"</span>);
+}</code></pre>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/r2S7j54I68c" title="3.3 Logical Operators" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 3.3 — Logical Operators</p>
+
+<h2 id="booleans">Booleans <a class="anchor" href="#booleans">#</a></h2>
+
+<p>A <strong>boolean</strong> is a variable that holds only <code>true</code> or <code>false</code>. Useful for tracking state — is the game paused? Has the player won yet? Is the door open?</p>
+
+<pre><code><span class="keyword">let</span> isPaused = <span class="keyword">false</span>;
+
+<span class="keyword">function</span> <span class="function">draw</span>() {
+  <span class="keyword">if</span> (isPaused) {
+    <span class="keyword">return</span>;   <span class="comment">// skip the rest of draw()</span>
+  }
+  <span class="comment">// ... rest of the sketch</span>
+}
+
+<span class="keyword">function</span> <span class="function">mousePressed</span>() {
+  isPaused = !isPaused;   <span class="comment">// flip it: true ↔ false</span>
+}</code></pre>
+
+<p>That last line is a <em>toggle</em>. Press the mouse, pause; press again, unpause. The <code>!</code> means "not," so <code>!isPaused</code> reads as "the opposite of whatever isPaused currently is."</p>
+
+<div class="video-container">
+  <iframe src="https://www.youtube.com/embed/Rk-_syQluvc" title="3.4 Boolean Variables" allowfullscreen></iframe>
+</div>
+<p class="video-caption">Coding Train 3.4 — Boolean Variables</p>
+
+<h2 id="common-mistakes">Common Beginner Mistakes <a class="anchor" href="#common-mistakes">#</a></h2>
+
+<div class="error-example">
+<span class="callout-title">Using = instead of ===</span>
+<code>if (score = 100)</code> doesn't <em>check</em> the score, it <em>sets</em> it to 100, and the condition is always truthy. You wanted <code>if (score === 100)</code>.
+</div>
+
+<div class="error-example">
+<span class="callout-title">Missing curly braces</span>
+Always use <code>{ }</code>, even for one-line ifs. Beginners get bitten when they add a second line and forget that without braces, only the first line is part of the if.
+</div>
+
+<div class="error-example">
+<span class="callout-title">"or" written as "or"</span>
+JavaScript doesn't speak English. <code>and</code>, <code>or</code>, and <code>not</code> are <code>&amp;&amp;</code>, <code>||</code>, and <code>!</code>. (The pipe character <code>|</code> is on the same key as <code>\</code> on most keyboards.)
+</div>
+
+<div class="error-example">
+<span class="callout-title">Comparing the wrong way</span>
+<code>if (0 &lt; x &lt; 100)</code> looks like math but isn't. JavaScript evaluates <code>0 &lt; x</code> first (giving <code>true</code> or <code>false</code>), then compares that to <code>100</code>, which is nonsense. Write it as <code>if (x &gt; 0 &amp;&amp; x &lt; 100)</code>.
+</div>
+
+<h2 id="exercises">Practice Exercises <a class="anchor" href="#exercises">#</a></h2>
+
+<div class="exercise">
+<span class="callout-title">Exercise 3.1 — Mouse hover button</span>
+Draw a 100×50 button at the center of the canvas. When the mouse is hovering over it, change its color. Hint: check <code>mouseX &gt; ... &amp;&amp; mouseX &lt; ... &amp;&amp; mouseY &gt; ... &amp;&amp; mouseY &lt; ...</code>.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 3.2 — Fix the bouncer</span>
+Take the bouncing ball example above and fix it so the ball never pokes through the wall. Use the ball's radius in your edge check.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 3.3 — Color zones</span>
+Divide the canvas into a 2×2 grid (four equal quadrants). Make the background of each quadrant a different color based on where the mouse is. Use <code>&amp;&amp;</code>.
+</div>
+
+<div class="exercise">
+<span class="callout-title">Exercise 3.4 — Light switch</span>
+Use a boolean called <code>lightOn</code>. When the mouse is pressed, toggle it. When it's <code>true</code>, draw a yellow sun in the middle of a light blue sky. When it's <code>false</code>, draw a white moon in a dark navy sky.
+</div>
+
+<p>You've taught your sketch how to think. Up next: <strong>loops</strong> — how to teach it to repeat itself. Without loops, we couldn't draw a grid of 400 squares without typing <code>rect()</code> 400 times. With loops? One line.</p>
+
+</main>
+<footer class="chapter-footer wrap">
+  <a href="chapter02.html"><span class="label">← Previous</span><span class="title">Ch. 2: Variables</span></a>
+  <a class="next" href="chapter04.html"><span class="label">Next →</span><span class="title">Ch. 4: Loops</span></a>
+</footer>
+</body>
+</html>
