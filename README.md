@@ -2,7 +2,7 @@
 
 A self-contained, seven-chapter HTML textbook for teaching creative coding with **p5.js** to high-school students. Heavily inspired by Dan Shiffman's [Coding Train](https://thecodingtrain.com/) and his book *Code! Programming with p5.js*, with embedded Coding Train videos throughout.
 
-Built by a high-school Director of Instructional Technology / AP CSA teacher, intended for classroom use and hosted on GitHub Pages. You can access the live page here: (https://falconphysics.github.io/Programming-Textbook/)[https://falconphysics.github.io/Programming-Textbook/]
+Built by a high-school Director of Instructional Technology / AP CSA teacher, intended for classroom use and hosted on GitHub Pages. You can access the live page here: [https://falconphysics.github.io/Programming-Textbook/](https://falconphysics.github.io/Programming-Textbook/)
 
 ---
 
