@@ -1,4 +1,17 @@
+
+
+
+
 (function () {
+  function FunctionData(signature, name, params, code) {
+    this.signature = signature;
+    this.name = name;
+    this.params = params;
+    this.code = code;
+  }
+
+  let functions = new Map();
+
   function injectRunnerStyles() {
     if (document.head.querySelector('#snippet-runner-styles')) return;
     const style = document.createElement('style');
@@ -87,7 +100,7 @@
     const triggers = [
       'createCanvas',
       'function setup',
-      'function draw',
+      'function draw(',
       'mouseX',
       'mouseY',
       'ellipse(',
@@ -160,10 +173,22 @@
 
   function extractFunctionDeclarations(code) {
     const results = [];
-    const re = /function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+    const re = /function\s+([A-Za-z_$][\w$]*)\s*\(.*\)/g;
     let m;
     while ((m = re.exec(code)) !== null) {
+      console.log(m);
+      const signature = m[0];
       const name = m[1];
+      console.log("CODE EXTRACTION: " + code);
+
+      if (name !== "setup" && name !== "draw" && name !== "mousePressed") {
+        let functionData = new FunctionData(signature, name, "", code);
+
+        functions.set(signature, functionData);
+        console.log("FUNCTION NAME: " + name);
+        console.log("Functions size: " + functions.size);
+      }
+
       const start = m.index;
       const braceIndex = code.indexOf('{', re.lastIndex - 1);
       if (braceIndex === -1) continue;
@@ -196,13 +221,37 @@
 
       // extract top-level function declarations and persist those that are not called here
       const decls = extractFunctionDeclarations(codeText);
+
+
+      let hasFunctionOtherThanSetupDraw = false;
+
       const uncalledDecls = [];
       decls.forEach((d) => {
+        console.log("name: " + d.name);
+
         if (d.name === 'setup' || d.name === 'draw') return;
+        hasFunctionOtherThanSetupDraw = true;
         const callRe = new RegExp('\\b' + d.name + '\\s*\\(');
         const isCalled = callRe.test(codeText);
         if (!isCalled) uncalledDecls.push(d.decl);
       });
+
+
+      let hasSetupOrDraw;
+
+      if (hasFunctionOtherThanSetupDraw) {
+        decls.forEach((d) => {
+          console.log("namen: " + d.name);
+
+          if (d.name === 'setup' || d.name === 'draw') {
+            hasSetupOrDraw = true;
+          }
+        })
+      }
+
+      if (hasFunctionOtherThanSetupDraw && !hasSetupOrDraw) {
+        return;
+      }
 
       // build runner code with definitions that appeared earlier on the page
       const runnerCode = (persistedDefinitions ? persistedDefinitions + '\n\n' : '') + codeText;
@@ -302,6 +351,13 @@
     const hasCreateCanvas = /\bcreateCanvas\s*\(/.test(codeText);
     const hasInteractive = /\b(mouseX|mouseY|pmouseX|pmouseY|frameCount|keyIsDown|mouseIsPressed|touches)\b/.test(codeText);
     const strippedCreateCanvas = codeText.replace(/\bcreateCanvas\s*\([^)]*\)\s*;?/g, '');
+
+    console.log(`GEN FUNCTION SIZE: ${functions.size}`)
+
+    functions.forEach((functionData) => {
+      console.log(`Function Data: ${functionData.name} ${functionData.signature}`);
+
+    });
 
     let bootCode;
     if (hasSetup) {
