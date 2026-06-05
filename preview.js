@@ -3,6 +3,11 @@
 
 
 (function () {
+  const sigParamRE = /function\s+\w+\(([^)]+)\)/g;
+  const paramRE = /\s+\w+\(([^)]+)*\)/g;
+  const codeRE = /function\s+([A-Za-z_$][\w$]*)\s*\(.*\)/g;
+
+
   function FunctionData(signature, name, params, code) {
     this.signature = signature;
     this.name = name;
@@ -97,6 +102,10 @@
       /out of bounds!/i.test(code);
     if (ignoreTopLeftBoxSnippet) return false;
 
+    if (!code.includes("(")) {
+      return;
+    }
+
     const triggers = [
       'createCanvas',
       'function setup',
@@ -171,27 +180,35 @@
     return true;
   }
 
-  function extractFunctionDeclarations(code) {
-    const results = [];
-    const re = /function\s+([A-Za-z_$][\w$]*)\s*\(.*\)/g;
-    let m;
-    while ((m = re.exec(code)) !== null) {
-      console.log(m);
-      const signature = m[0];
-      const name = m[1];
-      console.log("CODE EXTRACTION: " + code);
+  function findString(input, search) {
+    let size = search.length
+    let offset = 0;
 
-      if (name !== "setup" && name !== "draw" && name !== "mousePressed") {
-        let functionData = new FunctionData(signature, name, "", code);
+    while (size + offset < input.length) {
+      let slice = input.slice(offset, size + offset);
 
-        functions.set(signature, functionData);
-        console.log("FUNCTION NAME: " + name);
-        console.log("Functions size: " + functions.size);
+      if (slice == search) {
+        return offset;
       }
 
+      offset += 1;
+    }
+
+    return -1;
+  }
+
+  function extractFunctionDeclarations(code) {
+    const results = [];
+    let m;
+    while ((m = codeRE.exec(code)) !== null) {
+      const signature = m[0];
+      const name = m[1];
       const start = m.index;
-      const braceIndex = code.indexOf('{', re.lastIndex - 1);
+      
+      // Find the opening brace and extract the complete function body
+      const braceIndex = code.indexOf('{', codeRE.lastIndex - 1);
       if (braceIndex === -1) continue;
+      
       let pos = braceIndex + 1;
       let depth = 1;
       while (pos < code.length && depth > 0) {
@@ -200,11 +217,40 @@
         else if (ch === '}') depth -= 1;
         pos += 1;
       }
+      
       const decl = code.slice(start, pos);
       results.push({ name, decl });
-      re.lastIndex = pos;
+
+      // Store function data for later injection if it's called in another snippet
+      if (name !== "setup" && name !== "draw" && name !== "mousePressed") {
+        // Extract parameter count: split by comma and filter out empty/whitespace-only params
+        const paramMatch = signature.match(/\(([^)]*)\)/);
+        const paramString = paramMatch ? paramMatch[1].trim() : '';
+        const params = paramString === '' ? 0 : paramString.split(',').filter(p => p.trim()).length;
+        
+        // Store by name + param count so we can have multiple arities
+        const key = `${name}/${params}`;
+        console.log(`Storing function: ${name} with ${params} params (key: ${key})`);
+        functions.set(key, new FunctionData(signature, name, params, decl));
+      }
+
+      codeRE.lastIndex = pos;
     }
     return results;
+  }
+
+  function getParamAmount(code, re) {
+    let params = 0;
+
+    while ((match = re.exec(code)) !== null) {
+      parameters = match[1].split(/,\s*/)
+
+      console.log("PARAM RE: " + parameters.length);
+
+      params = parameters.length;
+    }
+
+    return params;
   }
 
   let mouseListenerAttached = false;
@@ -345,7 +391,6 @@
   }
 
   function generateIframeSrcdoc(codeText) {
-    const snippetSource = JSON.stringify(codeText);
     const hasSetup = /\bfunction\s+setup\s*\(/.test(codeText);
     const hasDraw = /\bfunction\s+draw\s*\(/.test(codeText);
     const hasCreateCanvas = /\bcreateCanvas\s*\(/.test(codeText);
@@ -354,10 +399,43 @@
 
     console.log(`GEN FUNCTION SIZE: ${functions.size}`)
 
-    functions.forEach((functionData) => {
-      console.log(`Function Data: ${functionData.name} ${functionData.signature}`);
+    const injectedFunctions = new Set(); // Track which functions we've already injected
+    let injectionCode = "";
 
+    functions.forEach((functionData, key) => {
+      // Skip if we've already injected this function
+      if (injectedFunctions.has(functionData.name)) return;
+
+      console.log(`Checking function: ${functionData.name} (${functionData.params} params), key: ${key}`);
+
+      if (codeText.includes(functionData.name)) {
+        // Create a regex that specifically matches calls to this function
+        const functionCallRegex = new RegExp(`\\b${functionData.name}\\s*\\(([^)]*)\\)`, 'g');
+        let match;
+
+        while ((match = functionCallRegex.exec(codeText)) !== null) {
+          const argsString = match[1].trim();
+          // Count arguments using same logic as definition: split by comma and filter empty params
+          const argCount = argsString === '' ? 0 : argsString.split(',').filter(p => p.trim()).length;
+
+          console.log(`Found call to ${functionData.name}(${argsString}) with ${argCount} arguments, comparing to stored: ${functionData.params}`);
+          console.log(`Match result: ${argCount} === ${functionData.params} = ${argCount === functionData.params}`);
+
+          if (argCount === functionData.params) {
+            console.log(`✓ Matched! Injecting function: ${functionData.name}`);
+            injectionCode += functionData.code + '\n';
+            injectedFunctions.add(functionData.name);
+            break; // Found a matching call, move to next function
+          }
+        }
+      } else {
+        console.log(`Function ${functionData.name} not found in current code snippet`);
+      }
     });
+
+    const snippetSource = JSON.stringify(injectionCode + codeText);
+
+    console.log("Source " + snippetSource)
 
     let bootCode;
     if (hasSetup) {
